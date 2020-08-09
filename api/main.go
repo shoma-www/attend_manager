@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"sync"
 	"syscall"
 	"time"
@@ -13,18 +15,27 @@ import (
 )
 
 func main() {
+	path := "./config.yaml"
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	c, err := LoadConfig(absPath)
+
 	r := mux.NewRouter()
 	r.HandleFunc("/healthcheck", HealthCheckHandler)
 
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:8080",
+		Addr:         fmt.Sprintf("%s:%d", c.Server.Addr, c.Server.Port),
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil {
+		if err = srv.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
 	}()
