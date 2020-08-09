@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// HealthCheckHandler ヘルスチェック用API
 func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body := map[string]string{
