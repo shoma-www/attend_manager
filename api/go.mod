@@ -1,4 +1,4 @@
-module github.com/shoma-www/atend_manager_api
+module github.com/shoma-www/atend_manager/api
 
 go 1.14
 
