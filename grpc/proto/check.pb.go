@@ -67,7 +67,7 @@ func (*HealthRequest) Descriptor() ([]byte, []int) {
 	return file_proto_check_proto_rawDescGZIP(), []int{0}
 }
 
-type HelthResponse struct {
+type HealthResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -75,8 +75,8 @@ type HelthResponse struct {
 	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
 }
 
-func (x *HelthResponse) Reset() {
-	*x = HelthResponse{}
+func (x *HealthResponse) Reset() {
+	*x = HealthResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_check_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,13 +84,13 @@ func (x *HelthResponse) Reset() {
 	}
 }
 
-func (x *HelthResponse) String() string {
+func (x *HealthResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HelthResponse) ProtoMessage() {}
+func (*HealthResponse) ProtoMessage() {}
 
-func (x *HelthResponse) ProtoReflect() protoreflect.Message {
+func (x *HealthResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_check_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,12 +102,12 @@ func (x *HelthResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HelthResponse.ProtoReflect.Descriptor instead.
-func (*HelthResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use HealthResponse.ProtoReflect.Descriptor instead.
+func (*HealthResponse) Descriptor() ([]byte, []int) {
 	return file_proto_check_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *HelthResponse) GetStatus() string {
+func (x *HealthResponse) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -119,13 +119,14 @@ var File_proto_check_proto protoreflect.FileDescriptor
 var file_proto_check_proto_rawDesc = []byte{
 	0x0a, 0x11, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x22, 0x0f, 0x0a, 0x0d, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x22, 0x27, 0x0a, 0x0d, 0x48, 0x65, 0x6c, 0x74, 0x68, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x32, 0x38, 0x0a,
-	0x05, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x2f, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68,
-	0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x0e, 0x2e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0e, 0x2e, 0x48, 0x65, 0x6c, 0x74, 0x68, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x65, 0x73, 0x74, 0x22, 0x28, 0x0a, 0x0e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x32, 0x39,
+	0x0a, 0x05, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x30, 0x0a, 0x0b, 0x48, 0x65, 0x61, 0x6c, 0x74,
+	0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x0e, 0x2e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0f, 0x2e, 0x48, 0x65, 0x61, 0x6c, 0x74, 0x68, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -142,12 +143,12 @@ func file_proto_check_proto_rawDescGZIP() []byte {
 
 var file_proto_check_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_proto_check_proto_goTypes = []interface{}{
-	(*HealthRequest)(nil), // 0: HealthRequest
-	(*HelthResponse)(nil), // 1: HelthResponse
+	(*HealthRequest)(nil),  // 0: HealthRequest
+	(*HealthResponse)(nil), // 1: HealthResponse
 }
 var file_proto_check_proto_depIdxs = []int32{
-	0, // 0: check.HealthCheck:input_type -> HealthRequest
-	1, // 1: check.HealthCheck:output_type -> HelthResponse
+	0, // 0: Check.HealthCheck:input_type -> HealthRequest
+	1, // 1: Check.HealthCheck:output_type -> HealthResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -174,7 +175,7 @@ func file_proto_check_proto_init() {
 			}
 		}
 		file_proto_check_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HelthResponse); i {
+			switch v := v.(*HealthResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -218,7 +219,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CheckClient interface {
-	HealthCheck(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HelthResponse, error)
+	HealthCheck(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthResponse, error)
 }
 
 type checkClient struct {
@@ -229,9 +230,9 @@ func NewCheckClient(cc grpc.ClientConnInterface) CheckClient {
 	return &checkClient{cc}
 }
 
-func (c *checkClient) HealthCheck(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HelthResponse, error) {
-	out := new(HelthResponse)
-	err := c.cc.Invoke(ctx, "/check/HealthCheck", in, out, opts...)
+func (c *checkClient) HealthCheck(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthResponse, error) {
+	out := new(HealthResponse)
+	err := c.cc.Invoke(ctx, "/Check/HealthCheck", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -240,14 +241,14 @@ func (c *checkClient) HealthCheck(ctx context.Context, in *HealthRequest, opts .
 
 // CheckServer is the server API for Check service.
 type CheckServer interface {
-	HealthCheck(context.Context, *HealthRequest) (*HelthResponse, error)
+	HealthCheck(context.Context, *HealthRequest) (*HealthResponse, error)
 }
 
 // UnimplementedCheckServer can be embedded to have forward compatible implementations.
 type UnimplementedCheckServer struct {
 }
 
-func (*UnimplementedCheckServer) HealthCheck(context.Context, *HealthRequest) (*HelthResponse, error) {
+func (*UnimplementedCheckServer) HealthCheck(context.Context, *HealthRequest) (*HealthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
 }
 
@@ -265,7 +266,7 @@ func _Check_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/check/HealthCheck",
+		FullMethod: "/Check/HealthCheck",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CheckServer).HealthCheck(ctx, req.(*HealthRequest))
@@ -274,7 +275,7 @@ func _Check_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 var _Check_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "check",
+	ServiceName: "Check",
 	HandlerType: (*CheckServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

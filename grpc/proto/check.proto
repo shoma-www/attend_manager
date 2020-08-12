@@ -1,8 +1,8 @@
 syntax = "proto3";
-service check{
-  rpc HealthCheck (HealthRequest) returns (HelthResponse) {}
+service Check{
+  rpc HealthCheck (HealthRequest) returns (HealthResponse) {}
 }
 message HealthRequest {}
-message HelthResponse {
+message HealthResponse {
   string status = 1;
 }

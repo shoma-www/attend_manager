@@ -1,0 +1,5 @@
+# Binaries for programs and plugins
+*.test
+
+# Dependency directories (remove the comment below to include it)
+grpc
