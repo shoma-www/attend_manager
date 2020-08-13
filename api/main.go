@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,11 +19,15 @@ func main() {
 	path := "./config.yaml"
 	absPath, err := filepath.Abs(path)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 		return
 	}
 
 	c, err := LoadConfig(absPath)
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/healthcheck", HealthCheckHandler)
@@ -49,6 +54,11 @@ func main() {
 	go func() {
 		<-sigCh
 		log.Println("Graceful ShutDown...")
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err = srv.Shutdown(ctx); err != nil {
+			log.Fatalln(err)
+		}
 		endWaiter.Done()
 	}()
 	endWaiter.Wait()
