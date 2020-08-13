@@ -15,4 +15,4 @@ APIの受け口はapiに作成して、処理の実態（演算とDBの更新）
 `grpcurl -plaintext localhost:50051 describe Check`  
 
 - grpcをたたく
-`grpcurl -plaintext localhost:5005  Check.HealthCheck`(Check/HealthCheckでも可)
+`grpcurl -plaintext localhost:50051  proto.Check.HealthCheck`(proto.Check/HealthCheckでも可)

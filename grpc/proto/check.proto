@@ -1,4 +1,5 @@
 syntax = "proto3";
+package proto;
 service Check{
   rpc HealthCheck (HealthRequest) returns (HealthResponse) {}
 }
