@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  api:
+    image: attend_manager_api
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    volumes:
+      - ./:/go/app
+    networks:
+      - container-link
+    ports:
+      - 8080:8080
+  grpc:
+    image: attend_manager_grpc
+    build:
+      context: .
+      dockerfile: ./grpc/Dockerfile
+    volumes:
+      - ./:/go/app
+    networks:
+      - container-link
+    ports:
+      - 50051:50051
+
+networks:
+  default:
+    external:
+      name: bridge
+  container-link:
+    driver: bridge
