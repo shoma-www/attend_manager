@@ -1,0 +1,9 @@
+syntax = "proto3";
+package proto;
+service Check{
+  rpc HealthCheck (HealthRequest) returns (HealthResponse) {}
+}
+message HealthRequest {}
+message HealthResponse {
+  string status = 1;
+}
