@@ -3,10 +3,8 @@ package core
 import (
 	"io"
 	"log"
-	"os"
 
 	"github.com/mattn/go-colorable"
-	"github.com/mattn/go-isatty"
 )
 
 // LogLevel ログの出力レベル
@@ -60,13 +58,8 @@ type Logger struct {
 
 // NewLogger コンストラクタ
 func NewLogger(level LogLevel) *Logger {
-	l := log.New(colorable.NewNonColorable(os.Stderr), "", log.Ldate|log.Lmicroseconds|log.Lmsgprefix)
-	// ターミナル上か判定している
-	// ターミナル上なら色付ける
-	// Windowsとかだと判定されない
-	if isatty.IsTerminal(os.Stderr.Fd()) {
-		l.SetOutput(colorable.NewColorableStderr())
-	}
+	l := log.New(colorable.NewColorableStderr(), "", log.Ldate|log.Lmicroseconds|log.Lmsgprefix)
+
 	return &Logger{
 		l:     l,
 		level: level,

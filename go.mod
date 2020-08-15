@@ -7,7 +7,6 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/mattn/go-colorable v0.1.7
-	github.com/mattn/go-isatty v0.0.12
 	google.golang.org/grpc v1.31.0
 	google.golang.org/protobuf v1.25.0
 )
