@@ -23,6 +23,26 @@ services:
       - container-link
     ports:
       - 50051:50051
+    links:
+      - "mysql"
+  mysql:
+    image: mysql
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      MYSQL_DATABASE: attend
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      TZ: Asia/Tokyo
+    networks:
+      - container-link
+    ports:
+      - "3306:3306"
 
 networks:
   default:
@@ -30,3 +50,6 @@ networks:
       name: bridge
   container-link:
     driver: bridge
+
+volumes:
+  mysql-data:
