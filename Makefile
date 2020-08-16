@@ -7,5 +7,5 @@ cp-proto:
 	cp -r ./grpc/proto ./api
 
 build: clean
-	cd api && go build -o api
-	cd grpc && go build -o grpc
+	go build -o api ./api/...
+	go build -o grpc ./grpc/...
