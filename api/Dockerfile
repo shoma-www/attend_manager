@@ -11,5 +11,11 @@ RUN apk add --no-cache git \
     && go build -o api \
     && go get github.com/githubnemo/CompileDaemon
 
+# 時間をJSTに変更する
+RUN apk --update add tzdata && \
+    cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
+    apk del tzdata && \
+    rm -rf /var/cache/apk/*
+
 ENTRYPOINT CompileDaemon --build="go build -o api" --command="./api"
 EXPOSE 8080
