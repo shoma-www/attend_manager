@@ -46,5 +46,5 @@ func main() {
 	}()
 	endWaiter.Wait()
 
-	log.Println("Exit API Server")
+	logger.Info("Exit API Server")
 }

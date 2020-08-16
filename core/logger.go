@@ -1,8 +1,10 @@
 package core
 
 import (
+	"context"
 	"io"
 	"log"
+	"strings"
 
 	"github.com/mattn/go-colorable"
 )
@@ -50,10 +52,17 @@ func ConvertLogLevelToMessage(level LogLevel) string {
 	}
 }
 
+// ContextKey コンテキストキー
+type ContextKey string
+
+// UUIDContextKey UUIDのキー
+const UUIDContextKey ContextKey = "uuid"
+
 // Logger ログレベルによって出力を変更するロガー
 type Logger struct {
 	l     *log.Logger
 	level LogLevel
+	uuid  string
 }
 
 // NewLogger コンストラクタ
@@ -64,6 +73,23 @@ func NewLogger(level LogLevel) *Logger {
 		l:     l,
 		level: level,
 	}
+}
+
+func (l *Logger) clone() *Logger {
+	return &Logger{
+		l:     l.l,
+		level: l.level,
+	}
+}
+
+// WithUUID UUIDをセットする
+func (l *Logger) WithUUID(ctx context.Context) *Logger {
+	var ok bool
+	cl := l.clone()
+	if cl.uuid, ok = ctx.Value(UUIDContextKey).(string); !ok {
+		cl.uuid = ""
+	}
+	return cl
 }
 
 // SetOutput 出力先を変更
@@ -78,8 +104,9 @@ func (l *Logger) SetLogger(logger *log.Logger) {
 
 func (l *Logger) printf(level LogLevel, format string, v ...interface{}) {
 	if l.level <= level {
-		l.l.SetPrefix(ConvertLogLevelToMessage(level))
-		l.l.Printf(format, v...)
+		ls := ConvertLogLevelToMessage(level)
+		ss := []string{l.uuid, " ", ls, format}
+		l.l.Printf(strings.Join(ss, ""), v...)
 	}
 }
 

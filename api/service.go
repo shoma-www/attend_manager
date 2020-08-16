@@ -2,19 +2,20 @@ package main
 
 import (
 	"context"
-	"log"
 
 	pb "github.com/shoma-www/attend_manager/api/proto"
+	"github.com/shoma-www/attend_manager/core"
 	"google.golang.org/grpc"
 )
 
 // HealthCheckService 他システムへのhealthcheck
 type HealthCheckService struct {
+	logger *core.Logger
 }
 
 // NewHealthCheckService constructor
-func NewHealthCheckService() HealthCheckService {
-	return HealthCheckService{}
+func NewHealthCheckService(l *core.Logger) HealthCheckService {
+	return HealthCheckService{logger: l}
 }
 
 // Grpc GrpcのサーバーにHealthCheckを実施
@@ -26,6 +27,6 @@ func (hs HealthCheckService) Grpc(ctx context.Context) error {
 	defer conn.Close()
 	client := pb.NewCheckClient(conn)
 	res, err := client.HealthCheck(ctx, &pb.HealthRequest{})
-	log.Printf("health check grpc status: %s", res.GetStatus())
+	hs.logger.Debug("health check grpc status: %s", res.GetStatus())
 	return err
 }

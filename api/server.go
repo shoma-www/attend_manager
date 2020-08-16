@@ -32,6 +32,11 @@ func (s *Server) Init() {
 
 	ch := NewCheckHandler(s.logger)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
+	m := NewMiddleware(s.logger)
+	r.Use(
+		m.AddUUIDWithContext,
+		m.Logger,
+	)
 
 	s.server = &http.Server{
 		Handler:      r,

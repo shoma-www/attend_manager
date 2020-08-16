@@ -30,7 +30,7 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	}
 
-	cs := NewHealthCheckService()
+	cs := NewHealthCheckService(ch.logger.WithUUID(r.Context()))
 	if err := cs.Grpc(ctx); err != nil {
 		ch.logger.Error(err.Error())
 		status = http.StatusServiceUnavailable
@@ -39,7 +39,7 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(body); err != nil {
-		ch.logger.Error(err.Error())
+		ch.logger.WithUUID(r.Context()).Error(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
