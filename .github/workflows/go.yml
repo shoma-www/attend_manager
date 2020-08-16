@@ -1,0 +1,44 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14.7
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Use Cache
+      id: cache-primes
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go
+          
+    - name: Download Modules
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+    - name: Build
+      run: |
+        go build -o api ./api/...
+        go build -o grpc ./grpc/...
+
+    - name: Test
+      run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
