@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"context"
 	"log"
 	"os"
 	"strings"
@@ -102,6 +103,37 @@ func TestOutputLog(t *testing.T) {
 
 		wants := []string{
 			"[ERROR] Test Error hoge\n",
+		}
+
+		for _, want := range wants {
+			got, err := buf.ReadString('\n')
+			if err != nil {
+				t.Errorf("Can't be got actual value. %s\n", err)
+			}
+			if strings.Compare(want, got) != 0 {
+				t.Errorf("Did not match value. want=%s, got=%s\n", want, got)
+			}
+		}
+	})
+
+	t.Run("output uuid", func(t *testing.T) {
+		uuid := "12345"
+		ctx := context.WithValue(context.Background(), UUIDContextKey, uuid)
+		l := NewLogger(Debug)
+		buf := &bytes.Buffer{}
+		l.SetLogger(log.New(os.Stderr, "", log.Lmsgprefix))
+		l.SetOutput(buf)
+		l.WithUUID(ctx).Debug("Test Debug %s", "hoge")
+		l.WithUUID(ctx).Info("Test Info %s", "hoge")
+		cl := l.WithUUID(ctx)
+		cl.Warn("Test Warn %s", "hoge")
+		cl.Error("Test Error %s", "hoge")
+
+		wants := []string{
+			uuid + " [DEBUG] Test Debug hoge\n",
+			uuid + " [INFO ] Test Info hoge\n",
+			uuid + " [WARN ] Test Warn hoge\n",
+			uuid + " [ERROR] Test Error hoge\n",
 		}
 
 		for _, want := range wants {

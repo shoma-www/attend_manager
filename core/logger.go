@@ -105,7 +105,11 @@ func (l *Logger) SetLogger(logger *log.Logger) {
 func (l *Logger) printf(level LogLevel, format string, v ...interface{}) {
 	if l.level <= level {
 		ls := ConvertLogLevelToMessage(level)
-		ss := []string{l.uuid, " ", ls, format}
+		ss := []string{}
+		if l.uuid != "" {
+			ss = append(ss, l.uuid, " ")
+		}
+		ss = append(ss, ls, format)
 		l.l.Printf(strings.Join(ss, ""), v...)
 	}
 }
