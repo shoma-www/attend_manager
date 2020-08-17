@@ -16,13 +16,15 @@ type Server struct {
 	server *http.Server
 	conf   *Config
 	logger *core.Logger
+	grpc   *Grpc
 }
 
 // NewServer コンストラクタ
-func NewServer(c *Config, l *core.Logger) *Server {
+func NewServer(c *Config, l *core.Logger, g *Grpc) *Server {
 	return &Server{
 		conf:   c,
 		logger: l,
+		grpc:   g,
 	}
 }
 
@@ -30,7 +32,7 @@ func NewServer(c *Config, l *core.Logger) *Server {
 func (s *Server) Init() {
 	r := mux.NewRouter()
 
-	ch := NewCheckHandler(s.logger)
+	ch := NewCheckHandler(s.logger, s.grpc)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 	m := NewMiddleware(s.logger)
 	r.Use(

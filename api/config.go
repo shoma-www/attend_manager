@@ -20,6 +20,12 @@ type Config struct {
 		Addr string
 		Port int
 	}
+	Client struct {
+		Grpc struct {
+			Addr string
+			Port int
+		}
+	}
 }
 
 // LoadConfig コンフィグをロード

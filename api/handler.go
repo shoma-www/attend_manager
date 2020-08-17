@@ -12,11 +12,12 @@ import (
 // CheckHandler handler
 type CheckHandler struct {
 	logger *core.Logger
+	grpc   *Grpc
 }
 
 // NewCheckHandler コンストラクタ
-func NewCheckHandler(l *core.Logger) *CheckHandler {
-	return &CheckHandler{logger: l}
+func NewCheckHandler(l *core.Logger, g *Grpc) *CheckHandler {
+	return &CheckHandler{logger: l, grpc: g}
 }
 
 // HealthCheck ヘルスチェック用API
@@ -30,7 +31,9 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	}
 
-	cs := NewHealthCheckService(ch.logger.WithUUID(r.Context()))
+	client := ch.grpc.CreateCheckClient()
+	defer ch.grpc.Close()
+	cs := NewHealthCheckService(ch.logger.WithUUID(r.Context()), client)
 	if err := cs.Grpc(ctx); err != nil {
 		ch.logger.Error(err.Error())
 		status = http.StatusServiceUnavailable

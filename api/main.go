@@ -28,7 +28,9 @@ func main() {
 	logger := core.NewLogger(core.Debug)
 	logger.Info("Start Attend Manager API Server")
 
-	s := NewServer(c, logger)
+	grpc := NewGrpc(c)
+
+	s := NewServer(c, logger, grpc)
 	s.Init()
 	go s.ListenAndServe()
 
