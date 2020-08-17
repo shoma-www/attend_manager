@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/server"
 )
 
@@ -15,6 +16,8 @@ const (
 )
 
 func main() {
+	logger := core.NewLogger(core.Debug)
+	logger.Info("Start gRPC Server")
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Println(err)
@@ -22,10 +25,13 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	server.Register(s)
+	server.Register(s, logger)
 
 	reflection.Register(s)
 	if err = s.Serve(lis); err != nil {
 		log.Println(err)
 	}
+
+	logger.Info("Exit gRPC Server")
+	s.Stop()
 }
