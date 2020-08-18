@@ -8,12 +8,12 @@ import (
 
 // CheckService 他システムへのhealthcheck
 type CheckService struct {
-	logger *core.Logger
+	logger core.Logger
 	repo   CheckRepository
 }
 
 // NewCheckService constructor
-func NewCheckService(l *core.Logger, cr CheckRepository) CheckService {
+func NewCheckService(l core.Logger, cr CheckRepository) CheckService {
 	return CheckService{logger: l, repo: cr}
 }
 

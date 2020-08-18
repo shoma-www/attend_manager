@@ -15,12 +15,12 @@ import (
 type Server struct {
 	server *http.Server
 	conf   *Config
-	logger *core.Logger
+	logger core.Logger
 	repof  *RepoFactory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *Config, l *core.Logger, repof *RepoFactory) *Server {
+func NewServer(c *Config, l core.Logger, repof *RepoFactory) *Server {
 	return &Server{
 		conf:   c,
 		logger: l,

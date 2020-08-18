@@ -8,10 +8,10 @@ import (
 )
 
 type check struct {
-	logger *core.Logger
+	logger core.Logger
 }
 
-func NewCheckServer(l *core.Logger) *check {
+func NewCheckServer(l core.Logger) *check {
 	return &check{logger: l}
 }
 

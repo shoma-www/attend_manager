@@ -15,11 +15,11 @@ import (
 
 // Middleware routeのmiddleware
 type Middleware struct {
-	logger *core.Logger
+	logger core.Logger
 }
 
 // NewMiddleware コンストラクタ
-func NewMiddleware(l *core.Logger) *Middleware {
+func NewMiddleware(l core.Logger) *Middleware {
 	return &Middleware{
 		logger: l,
 	}

@@ -11,12 +11,12 @@ import (
 
 // CheckHandler handler
 type CheckHandler struct {
-	logger *core.Logger
+	logger core.Logger
 	f      *RepoFactory
 }
 
 // NewCheckHandler コンストラクタ
-func NewCheckHandler(l *core.Logger, repof *RepoFactory) *CheckHandler {
+func NewCheckHandler(l core.Logger, repof *RepoFactory) *CheckHandler {
 	return &CheckHandler{logger: l, f: repof}
 }
 

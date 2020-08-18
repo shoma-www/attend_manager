@@ -58,32 +58,43 @@ type ContextKey string
 // UUIDContextKey UUIDのキー
 const UUIDContextKey ContextKey = "uuid"
 
-// Logger ログレベルによって出力を変更するロガー
-type Logger struct {
+// Logger LoggerInterface
+type Logger interface {
+	SetOutput(w io.Writer)
+	SetLogger(logger *log.Logger)
+	WithUUID(ctx context.Context) Logger
+	Debug(format string, v ...interface{})
+	Info(format string, v ...interface{})
+	Warn(format string, v ...interface{})
+	Error(format string, v ...interface{})
+}
+
+// logger ログレベルによって出力を変更するロガー
+type logger struct {
 	l     *log.Logger
 	level LogLevel
 	uuid  string
 }
 
 // NewLogger コンストラクタ
-func NewLogger(level LogLevel) *Logger {
+func NewLogger(level LogLevel) Logger {
 	l := log.New(colorable.NewColorableStderr(), "", log.Ldate|log.Lmicroseconds|log.Lmsgprefix)
 
-	return &Logger{
+	return &logger{
 		l:     l,
 		level: level,
 	}
 }
 
-func (l *Logger) clone() *Logger {
-	return &Logger{
+func (l *logger) clone() *logger {
+	return &logger{
 		l:     l.l,
 		level: l.level,
 	}
 }
 
 // WithUUID UUIDをセットする
-func (l *Logger) WithUUID(ctx context.Context) *Logger {
+func (l *logger) WithUUID(ctx context.Context) Logger {
 	var ok bool
 	cl := l.clone()
 	if cl.uuid, ok = ctx.Value(UUIDContextKey).(string); !ok {
@@ -93,16 +104,16 @@ func (l *Logger) WithUUID(ctx context.Context) *Logger {
 }
 
 // SetOutput 出力先を変更
-func (l *Logger) SetOutput(w io.Writer) {
+func (l *logger) SetOutput(w io.Writer) {
 	l.l.SetOutput(colorable.NewNonColorable(w))
 }
 
-// SetLogger Loggerを設定
-func (l *Logger) SetLogger(logger *log.Logger) {
+// Setlogger Loggerを設定
+func (l *logger) SetLogger(logger *log.Logger) {
 	l.l = logger
 }
 
-func (l *Logger) printf(level LogLevel, format string, v ...interface{}) {
+func (l *logger) printf(level LogLevel, format string, v ...interface{}) {
 	if l.level <= level {
 		ls := ConvertLogLevelToMessage(level)
 		ss := []string{}
@@ -115,21 +126,21 @@ func (l *Logger) printf(level LogLevel, format string, v ...interface{}) {
 }
 
 // Debug Debugログ
-func (l *Logger) Debug(format string, v ...interface{}) {
+func (l *logger) Debug(format string, v ...interface{}) {
 	l.printf(Debug, format, v...)
 }
 
 // Info Infoログ
-func (l *Logger) Info(format string, v ...interface{}) {
+func (l *logger) Info(format string, v ...interface{}) {
 	l.printf(Info, format, v...)
 }
 
 // Warn Warnログ
-func (l *Logger) Warn(format string, v ...interface{}) {
+func (l *logger) Warn(format string, v ...interface{}) {
 	l.printf(Warn, format, v...)
 }
 
 // Error Errorログ
-func (l *Logger) Error(format string, v ...interface{}) {
+func (l *logger) Error(format string, v ...interface{}) {
 	l.printf(Error, format, v...)
 }
