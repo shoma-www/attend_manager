@@ -17,7 +17,7 @@ func NewCheckServer(l core.Logger) *check {
 
 // HealthCheck ヘルスチェック用
 func (c *check) HealthCheck(ctx context.Context, req *pb.HealthRequest) (*pb.HealthResponse, error) {
-	c.logger.Info("Health check doing.")
+	c.logger.WithUUID(ctx).Info("Health check doing.")
 	return &pb.HealthResponse{
 		Status: "success",
 	}, nil

@@ -24,7 +24,7 @@ func main() {
 		return
 	}
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
 	server.Register(s, logger)
 
 	reflection.Register(s)
