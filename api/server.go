@@ -16,15 +16,15 @@ type Server struct {
 	server *http.Server
 	conf   *Config
 	logger *core.Logger
-	grpc   *Grpc
+	repof  *RepoFactory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *Config, l *core.Logger, g *Grpc) *Server {
+func NewServer(c *Config, l *core.Logger, repof *RepoFactory) *Server {
 	return &Server{
 		conf:   c,
 		logger: l,
-		grpc:   g,
+		repof:  repof,
 	}
 }
 
@@ -32,7 +32,7 @@ func NewServer(c *Config, l *core.Logger, g *Grpc) *Server {
 func (s *Server) Init() {
 	r := mux.NewRouter()
 
-	ch := NewCheckHandler(s.logger, s.grpc)
+	ch := NewCheckHandler(s.logger, s.repof)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 	m := NewMiddleware(s.logger)
 	r.Use(

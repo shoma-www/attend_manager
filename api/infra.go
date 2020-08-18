@@ -1,46 +1,60 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 
 	pb "github.com/shoma-www/attend_manager/api/proto"
 	"google.golang.org/grpc"
 )
 
-// Grpc Grpcサーバへのクライアントを生成する構造体
-type Grpc struct {
-	address string
-	cc      *grpc.ClientConn
+// createGrpcConn Connectioを生成する
+func createGrpcConn(address string) (*grpc.ClientConn, error) {
+	con, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		return nil, errors.New("grpc dial failed")
+	}
+	return con, nil
 }
 
-// NewGrpc コンストラクタ
-func NewGrpc(c *Config) *Grpc {
+// RepoFactory Repositoryのファクトリ
+type RepoFactory struct {
+	address string
+}
+
+// NewRepoFactory コンストラクタ
+func NewRepoFactory(c *Config) *RepoFactory {
 	conf := c.Client.Grpc
-	return &Grpc{
+	return &RepoFactory{
 		address: fmt.Sprintf("%s:%d", conf.Addr, conf.Port),
 	}
 }
 
-func (g *Grpc) connection() *grpc.ClientConn {
-	if g.cc == nil {
-		con, err := grpc.Dial(g.address, grpc.WithInsecure())
-		if err != nil {
-			panic("Grpc dial failed!")
-		}
-		g.cc = con
-	}
-	return g.cc
+// CreateCheckRepository Repositoryつくるで
+func (rf *RepoFactory) CreateCheckRepository() CheckRepository {
+	return &checkGrpc{address: rf.address}
 }
 
-// Close ClientのConnectionを閉じる
-func (g *Grpc) Close() {
-	if g.cc != nil {
-		g.cc.Close()
-		g.cc = nil
-	}
+// checkGrpc Check系のGrpc通信するやつ
+type checkGrpc struct {
+	address string
 }
 
-// CreateCheckClient CheckServerへのClietnを生成
-func (g *Grpc) CreateCheckClient() pb.CheckClient {
-	return pb.NewCheckClient(g.connection())
+// HealthCheck CheckServerへのClietnを生成
+func (cg *checkGrpc) HealthCheck(ctx context.Context) (*HealthCheckStatus, error) {
+	con, err := createGrpcConn(cg.address)
+	if err != nil {
+		return nil, err
+	}
+	defer con.Close()
+	client := pb.NewCheckClient(con)
+	pbst, err := client.HealthCheck(ctx, &pb.HealthRequest{})
+	if err != nil {
+		return nil, err
+	}
+	st := &HealthCheckStatus{
+		Status: pbst.GetStatus(),
+	}
+	return st, nil
 }
