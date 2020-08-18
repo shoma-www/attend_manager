@@ -20,6 +20,9 @@ func NewCheckService(l *core.Logger, cr CheckRepository) CheckService {
 // HealthCheck GrpcのサーバーにHealthCheckを実施
 func (hs CheckService) HealthCheck(ctx context.Context) error {
 	status, err := hs.repo.HealthCheck(ctx)
+	if err != nil {
+		return err
+	}
 	hs.logger.Debug("health check grpc status: %s", status.Status)
 	return err
 }
