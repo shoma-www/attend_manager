@@ -9,9 +9,12 @@ services:
     volumes:
       - ./:/go/app
     networks:
-      - container-link
+      - api-link
     ports:
       - 8080:8080
+      depends_on:
+        - grpc
+
   grpc:
     image: attend_manager_grpc
     build:
@@ -20,19 +23,21 @@ services:
     volumes:
       - ./:/go/app
     networks:
-      - container-link
+      - api-link
+      - db-link
     ports:
       - 50051:50051
-    links:
+    depends_on:
       - "mysql"
+
   mysql:
     image: mysql
     build:
       context: .
-      dockerfile: ./docker/mysql/Dockerfile
+      dockerfile: ./resource/mysql/Dockerfile
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./resource/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
       MYSQL_DATABASE: attend
       MYSQL_ROOT_PASSWORD: root
@@ -40,15 +45,25 @@ services:
       MYSQL_PASSWORD: test
       TZ: Asia/Tokyo
     networks:
-      - container-link
+      - db-link
     ports:
       - "3306:3306"
+
+  migrate:
+    image: migrate/migrate
+    networks:
+      - db-link
+    volumes:
+      - ./resource/mysql/migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "mysql://root:root@tcp(mysql:3306)/attend?query", "up", "3"]
 
 networks:
   default:
     external:
       name: bridge
-  container-link:
+  api-link:
+    driver: bridge
+  db-link:
     driver: bridge
 
 volumes:
