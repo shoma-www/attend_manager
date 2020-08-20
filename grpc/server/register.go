@@ -8,5 +8,6 @@ import (
 
 // Register サーバーの登録
 func Register(s *grpc.Server, l core.Logger) {
-	pb.RegisterCheckServer(s, NewCheckServer(l))
+	pb.RegisterCheckServer(s, NewCheck(l))
+	pb.RegisterUserServer(s, NewUser(l))
 }

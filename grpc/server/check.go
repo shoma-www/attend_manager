@@ -11,7 +11,8 @@ type check struct {
 	logger core.Logger
 }
 
-func NewCheckServer(l core.Logger) *check {
+// NewCheck コンストラクタ
+func NewCheck(l core.Logger) pb.CheckServer {
 	return &check{logger: l}
 }
 
