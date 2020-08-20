@@ -23,5 +23,5 @@
 - ~~Github Actionsの設定~~
 - ユーザー登録機能作成
 	- ~~MySQLをdokcker-composeに追加~~
-	- migrationを追加
+	- ~~migrationを追加~~
 	- 機能追加（実装・テスト）
