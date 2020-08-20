@@ -1,0 +1,21 @@
+syntax = "proto3";
+package proto;
+
+service User {
+  rpc Register (RegisterRequesut) returns (RegisterResponse) {}
+}
+
+message RegisterRequesut {
+  string user_id = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
+  RegisterStatus status = 1;
+  string error_message = 2;
+}
+
+enum RegisterStatus {
+  SUCCESS = 0;
+  ERROR = 1;
+}

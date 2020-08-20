@@ -5,7 +5,7 @@ APIの受け口はapiに作成して、処理の実態（演算とDBの更新）
 
 ## コマンド
 - pbファイルの出力  
-`protoc --go_out=plugins=grpc:./ proto/check.proto`  
+`protoc --go_out=plugins=grpc:./ grpc/proto/check.proto`  
 
 grpc
 ```sh
