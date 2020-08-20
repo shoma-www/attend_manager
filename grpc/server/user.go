@@ -6,22 +6,30 @@ import (
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/proto"
 	pb "github.com/shoma-www/attend_manager/grpc/proto"
+	"github.com/shoma-www/attend_manager/grpc/service"
 )
 
 type user struct {
 	logger core.Logger
+	us     *service.User
 }
 
 // NewUser コンストラクタ
-func NewUser(l core.Logger) pb.UserServer {
-	return &user{logger: l}
+func NewUser(l core.Logger, us *service.User) pb.UserServer {
+	return &user{logger: l, us: us}
 }
 
 func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*proto.RegisterResponse, error) {
-	u.logger.WithUUID(ctx).Info("Hello World!")
-	u.logger.WithUUID(ctx).Info("%v", req)
+	var message string
+	status := pb.RegisterStatus_SUCCESS
+	err := u.us.Register(ctx, req.UserId, req.Password)
+	if err != nil {
+		message = err.Error()
+		status = pb.RegisterStatus_ERROR
+	}
+	u.logger.WithUUID(ctx).Debug("hello: %s", err)
 	return &pb.RegisterResponse{
-		Status:       pb.RegisterStatus_SUCCESS,
-		ErrorMessage: "",
+		Status:       status,
+		ErrorMessage: message,
 	}, nil
 }

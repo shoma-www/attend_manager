@@ -16,6 +16,7 @@ message RegisterResponse {
 }
 
 enum RegisterStatus {
-  SUCCESS = 0;
-  ERROR = 1;
+  UNKNOWN = 0;
+  SUCCESS = 1;
+  ERROR = 2;
 }

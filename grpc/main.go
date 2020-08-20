@@ -8,7 +8,11 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/shoma-www/attend_manager/core"
+	"github.com/shoma-www/attend_manager/grpc/infra"
 	"github.com/shoma-www/attend_manager/grpc/server"
+	"github.com/shoma-www/attend_manager/grpc/service"
+
+	pb "github.com/shoma-www/attend_manager/grpc/proto"
 )
 
 const (
@@ -24,8 +28,10 @@ func main() {
 		return
 	}
 
+	repof := infra.NewRepoFactory()
+
 	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
-	server.Register(s, logger)
+	Register(s, logger, repof)
 
 	reflection.Register(s)
 	if err = s.Serve(lis); err != nil {
@@ -34,4 +40,12 @@ func main() {
 
 	logger.Info("Exit gRPC Server")
 	s.Stop()
+}
+
+// Register サーバーの登録
+func Register(s *grpc.Server, l core.Logger, repof *infra.RepoFactory) {
+	pb.RegisterCheckServer(s, server.NewCheck(l))
+	ur := repof.CreateUserRepository()
+	us := service.NewUser(l, ur)
+	pb.RegisterUserServer(s, server.NewUser(l, us))
 }
