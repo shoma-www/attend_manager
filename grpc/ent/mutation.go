@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/rs/xid"
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 
 	"github.com/facebook/ent"
 )

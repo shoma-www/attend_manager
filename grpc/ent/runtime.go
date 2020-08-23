@@ -3,8 +3,8 @@
 package ent
 
 import (
-	"github.com/shoma-www/attend_manager/ent/schema"
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent/schema"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime

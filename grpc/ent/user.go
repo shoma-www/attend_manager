@@ -8,7 +8,7 @@ import (
 
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/rs/xid"
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
 
 // User is the model entity for the User schema.

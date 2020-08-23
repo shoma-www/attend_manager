@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/shoma-www/attend_manager/ent"
+	"github.com/shoma-www/attend_manager/grpc/ent"
 )
 
 var (

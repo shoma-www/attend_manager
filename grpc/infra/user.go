@@ -6,8 +6,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/rs/xid"
-	"github.com/shoma-www/attend_manager/ent"
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 )
 

@@ -5,7 +5,7 @@ package user
 import (
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/rs/xid"
-	"github.com/shoma-www/attend_manager/ent/predicate"
+	"github.com/shoma-www/attend_manager/grpc/ent/predicate"
 )
 
 // ID filters vertices based on their identifier.

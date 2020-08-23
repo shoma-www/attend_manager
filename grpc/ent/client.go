@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/shoma-www/attend_manager/ent/migrate"
+	"github.com/shoma-www/attend_manager/grpc/ent/migrate"
 
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 
 	"github.com/facebook/ent/dialect"
 	"github.com/facebook/ent/dialect/sql"

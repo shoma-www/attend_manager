@@ -10,7 +10,7 @@ import (
 	"github.com/facebook/ent/dialect/sql/sqlgraph"
 	"github.com/facebook/ent/schema/field"
 	"github.com/rs/xid"
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
 
 // UserCreate is the builder for creating a User entity.

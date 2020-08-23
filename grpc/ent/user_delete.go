@@ -9,8 +9,8 @@ import (
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/facebook/ent/dialect/sql/sqlgraph"
 	"github.com/facebook/ent/schema/field"
-	"github.com/shoma-www/attend_manager/ent/predicate"
-	"github.com/shoma-www/attend_manager/ent/user"
+	"github.com/shoma-www/attend_manager/grpc/ent/predicate"
+	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
 
 // UserDelete is the builder for deleting a User entity.

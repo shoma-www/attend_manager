@@ -5,9 +5,9 @@ package enttest
 import (
 	"context"
 
-	"github.com/shoma-www/attend_manager/ent"
+	"github.com/shoma-www/attend_manager/grpc/ent"
 	// required by schema hooks.
-	_ "github.com/shoma-www/attend_manager/ent/runtime"
+	_ "github.com/shoma-www/attend_manager/grpc/ent/runtime"
 
 	"github.com/facebook/ent/dialect/sql/schema"
 )
