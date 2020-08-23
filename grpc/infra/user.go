@@ -2,27 +2,28 @@ package infra
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/rs/xid"
+	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/ent"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 )
 
 type userDAO struct {
+	logger core.Logger
 }
 
-func (userDAO) Get(ctx context.Context, userID string) ([]*entity.User, error) {
+func (ud *userDAO) Get(ctx context.Context, userID string) ([]*entity.User, error) {
 	client, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend")
 	if err != nil {
 		return nil, err
 	}
 	defer client.Close()
 	us, _ := client.User.Query().Where(user.UserIDEQ(userID)).All(ctx)
-	fmt.Printf("%v", us)
 	users := make([]*entity.User, 0, len(us))
 	for _, u := range us {
+		ud.logger.Debug("id: %s, uid: %s, pass: %s", u.UUID, u.UserID, u.Password)
 		users = append(users, &entity.User{
 			ID:       u.UUID.String(),
 			UserID:   u.UserID,

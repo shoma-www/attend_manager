@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	repof := infra.NewRepoFactory()
+	repof := infra.NewRepoFactory(logger)
 
 	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
 	Register(s, logger, repof)
