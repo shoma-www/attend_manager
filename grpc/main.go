@@ -12,6 +12,7 @@ import (
 	"github.com/shoma-www/attend_manager/grpc/server"
 	"github.com/shoma-www/attend_manager/grpc/service"
 
+	_ "github.com/go-sql-driver/mysql"
 	pb "github.com/shoma-www/attend_manager/grpc/proto"
 )
 
