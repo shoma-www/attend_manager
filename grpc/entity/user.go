@@ -4,8 +4,9 @@ import "errors"
 
 // User User type
 type User struct {
-	ID     string
-	UserID string
+	ID       string
+	UserID   string
+	Password string
 }
 
 // Error UserのError定義

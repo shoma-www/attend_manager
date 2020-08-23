@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/entity"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User user service
@@ -25,20 +25,23 @@ func NewUser(l core.Logger, ur UserRepository) *User {
 // Register ユーザ登録
 func (u *User) Register(ctx context.Context, userID string, password string) error {
 	u.logger.WithUUID(ctx).Debug("register user_id: %s", userID)
-	if u, err := u.ur.Get(userID, password); err != entity.ErrUserNotFound {
-		if u == nil {
-			err = errors.New("cannot use user")
-		}
+	us, err := u.ur.Get(ctx, userID)
+	u.logger.WithUUID(ctx).Debug("%v", us)
+	if err != entity.ErrUserNotFound {
 		return err
 	}
-	if err := u.ur.Register(userID, password); err != nil {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	u.logger.WithUUID(ctx).Debug("hash: %s", hashedPassword)
+	user, err := u.ur.Register(ctx, userID, string(hashedPassword))
+	if err != nil {
 		return err
 	}
+	u.logger.WithUUID(ctx).Debug("create user: %v", user)
 	return nil
 }
 
 // UserRepository Access Interface
 type UserRepository interface {
-	Get(userID string, password string) (*entity.User, error)
-	Register(userID string, password string) error
+	Get(ctx context.Context, password string) ([]*entity.User, error)
+	Register(ctx context.Context, userID string, password string) (*entity.User, error)
 }
