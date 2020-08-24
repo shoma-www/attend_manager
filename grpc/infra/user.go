@@ -5,22 +5,21 @@ import (
 
 	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/core"
-	"github.com/shoma-www/attend_manager/grpc/ent"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 )
 
 type userDAO struct {
+	*transaction
 	logger core.Logger
 }
 
 func (ud *userDAO) Get(ctx context.Context, userID string) ([]*entity.User, error) {
-	client, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend")
-	if err != nil {
-		return nil, err
+	uc := ud.cl.User
+	if tx, ok := getTX(ctx); ok {
+		uc = tx.User
 	}
-	defer client.Close()
-	us, _ := client.User.Query().Where(user.UserIDEQ(userID)).All(ctx)
+	us, _ := uc.Query().Where(user.UserIDEQ(userID)).All(ctx)
 	users := make([]*entity.User, 0, len(us))
 	for _, u := range us {
 		ud.logger.Debug("id: %s, uid: %s, pass: %s", u.UUID, u.UserID, u.Password)
@@ -36,16 +35,13 @@ func (ud *userDAO) Get(ctx context.Context, userID string) ([]*entity.User, erro
 	return nil, entity.ErrUserNotFound
 }
 
-func (userDAO) Register(ctx context.Context, userID, password string) (*entity.User, error) {
-	guid := xid.New()
-
-	client, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend")
-	if err != nil {
-		return nil, err
+func (ud *userDAO) Register(ctx context.Context, userID, password string) (*entity.User, error) {
+	uc := ud.cl.User
+	if tx, ok := getTX(ctx); ok {
+		uc = tx.User
 	}
-	defer client.Close()
-	u, err := client.Debug().User.Create().
-		SetUUID(guid).
+	u, err := uc.Create().
+		SetUUID(xid.New()).
 		SetUserID(userID).
 		SetPassword(password).
 		Save(ctx)

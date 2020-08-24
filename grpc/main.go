@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
 	"github.com/shoma-www/attend_manager/core"
+	"github.com/shoma-www/attend_manager/grpc/ent"
 	"github.com/shoma-www/attend_manager/grpc/infra"
 	"github.com/shoma-www/attend_manager/grpc/server"
 	"github.com/shoma-www/attend_manager/grpc/service"
@@ -25,11 +27,18 @@ func main() {
 	logger.Info("Start gRPC Server")
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Println(err)
+		logger.Error("%s", err.Error())
+		os.Exit(1)
 		return
 	}
 
-	repof := infra.NewRepoFactory(logger)
+	cl, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend")
+	if err != nil {
+		logger.Error("%s", err.Error())
+		os.Exit(1)
+		return
+	}
+	repof := infra.NewRepoFactory(logger, cl)
 
 	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
 	Register(s, logger, repof)

@@ -11,5 +11,6 @@ type User struct {
 
 // Error UserのError定義
 var (
-	ErrUserNotFound = errors.New("user not found")
+	ErrUserNotFound   = errors.New("user not found")
+	ErrDuplicatedUser = errors.New("user id is duplicated")
 )
