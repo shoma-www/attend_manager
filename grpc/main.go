@@ -38,6 +38,7 @@ func main() {
 		os.Exit(1)
 		return
 	}
+	defer cl.Close()
 	repof := infra.NewRepoFactory(logger, cl)
 
 	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
@@ -49,7 +50,7 @@ func main() {
 	}
 
 	logger.Info("Exit gRPC Server")
-	s.Stop()
+	s.GracefulStop()
 }
 
 // Register サーバーの登録
