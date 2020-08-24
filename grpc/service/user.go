@@ -23,15 +23,15 @@ func NewUser(l core.Logger, ur UserRepository) *User {
 
 // Register ユーザ登録
 func (u *User) Register(ctx context.Context, userID string, password string) error {
-	u.logger.WithUUID(ctx).Debug("register user_id: %s", userID)
-	u.ur.Transaction(ctx, func(tctx context.Context) error {
-		us, err := u.ur.Get(tctx, userID)
-		if err != entity.ErrUserNotFound {
+	u.logger.WithUUID(ctx).Info("register user. id: %s", userID)
+	err := u.ur.Transaction(ctx, func(tctx context.Context) error {
+		if us, err := u.ur.Get(tctx, userID); err != entity.ErrUserNotFound {
+			if us != nil && len(us) > 0 {
+				return entity.ErrDuplicatedUser
+			}
 			return err
 		}
-		if len(us) > 0 {
-			return entity.ErrDuplicatedUser
-		}
+
 		hashedPassword, err := core.GenerateHashedPassword(password)
 		if err != nil {
 			return err
@@ -40,9 +40,9 @@ func (u *User) Register(ctx context.Context, userID string, password string) err
 		if err != nil {
 			return err
 		}
-		u.logger.WithUUID(tctx).Debug("create user: %v", user)
+		u.logger.WithUUID(tctx).Info("complete registered user. id: %s, uuid: %s", user.UserID, user.UserID)
 		return nil
 	})
 
-	return nil
+	return err
 }

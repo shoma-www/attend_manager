@@ -26,8 +26,8 @@ func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*prot
 	if err != nil {
 		message = err.Error()
 		status = pb.RegisterStatus_ERROR
+		u.logger.WithUUID(ctx).Error("register err: %s", err)
 	}
-	u.logger.WithUUID(ctx).Debug("hello: %s", err)
 	return &pb.RegisterResponse{
 		Status:       status,
 		ErrorMessage: message,
