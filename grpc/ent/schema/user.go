@@ -25,6 +25,10 @@ func (User) Fields() []ent.Field {
 			MaxLen(200).
 			NotEmpty().
 			Sensitive(),
+		field.Time("CreatedAt").
+			Optional(),
+		field.Time("UpdatedAt").
+			Optional(),
 	}
 }
 

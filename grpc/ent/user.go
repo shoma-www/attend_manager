@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/rs/xid"
@@ -22,6 +23,10 @@ type User struct {
 	UserID string `json:"UserID,omitempty"`
 	// Password holds the value of the "Password" field.
 	Password string `json:"-"`
+	// CreatedAt holds the value of the "CreatedAt" field.
+	CreatedAt time.Time `json:"CreatedAt,omitempty"`
+	// UpdatedAt holds the value of the "UpdatedAt" field.
+	UpdatedAt time.Time `json:"UpdatedAt,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -31,6 +36,8 @@ func (*User) scanValues() []interface{} {
 		&xid.ID{},         // UUID
 		&sql.NullString{}, // UserID
 		&sql.NullString{}, // Password
+		&sql.NullTime{},   // CreatedAt
+		&sql.NullTime{},   // UpdatedAt
 	}
 }
 
@@ -60,6 +67,16 @@ func (u *User) assignValues(values ...interface{}) error {
 		return fmt.Errorf("unexpected type %T for field Password", values[2])
 	} else if value.Valid {
 		u.Password = value.String
+	}
+	if value, ok := values[3].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field CreatedAt", values[3])
+	} else if value.Valid {
+		u.CreatedAt = value.Time
+	}
+	if value, ok := values[4].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field UpdatedAt", values[4])
+	} else if value.Valid {
+		u.UpdatedAt = value.Time
 	}
 	return nil
 }
@@ -92,6 +109,10 @@ func (u *User) String() string {
 	builder.WriteString(", UserID=")
 	builder.WriteString(u.UserID)
 	builder.WriteString(", Password=<sensitive>")
+	builder.WriteString(", CreatedAt=")
+	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", UpdatedAt=")
+	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

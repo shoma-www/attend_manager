@@ -13,6 +13,10 @@ const (
 	FieldUserID = "user_id"
 	// FieldPassword holds the string denoting the password field in the database.
 	FieldPassword = "password"
+	// FieldCreatedAt holds the string denoting the createdat field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
+	FieldUpdatedAt = "updated_at"
 
 	// Table holds the table name of the user in the database.
 	Table = "users"
@@ -24,6 +28,8 @@ var Columns = []string{
 	FieldUUID,
 	FieldUserID,
 	FieldPassword,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 var (

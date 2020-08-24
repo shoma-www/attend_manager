@@ -14,6 +14,8 @@ var (
 		{Name: "uuid", Type: field.TypeUUID, Unique: true},
 		{Name: "user_id", Type: field.TypeString, Size: 80},
 		{Name: "password", Type: field.TypeString, Size: 200},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

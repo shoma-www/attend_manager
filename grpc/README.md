@@ -26,3 +26,9 @@ go install github.com/protocolbuffers/protobuf-go
 
 - grpcをたたく
 `grpcurl -plaintext localhost:50051  proto.Check.HealthCheck`(proto.Check/HealthCheckでも可)
+
+entの生成
+- generate schema
+`entc init User`
+- generate file
+`go generate ./grpc/ent`
