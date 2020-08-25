@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/shoma-www/attend_manager/api/entity"
 	"github.com/shoma-www/attend_manager/core"
 )
 
@@ -29,5 +30,5 @@ func (hs CheckService) HealthCheck(ctx context.Context) error {
 
 // CheckRepository Repository
 type CheckRepository interface {
-	HealthCheck(ctx context.Context) (*HealthCheckStatus, error)
+	HealthCheck(ctx context.Context) (*entity.HealthCheckStatus, error)
 }

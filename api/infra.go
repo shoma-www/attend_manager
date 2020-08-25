@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/shoma-www/attend_manager/api/config"
+	"github.com/shoma-www/attend_manager/api/entity"
 	pb "github.com/shoma-www/attend_manager/api/proto"
 	"google.golang.org/grpc"
 )
@@ -43,7 +44,7 @@ type checkGrpc struct {
 }
 
 // HealthCheck CheckServerへのClietnを生成
-func (cg *checkGrpc) HealthCheck(ctx context.Context) (*HealthCheckStatus, error) {
+func (cg *checkGrpc) HealthCheck(ctx context.Context) (*entity.HealthCheckStatus, error) {
 	con, err := createGrpcConn(cg.address)
 	if err != nil {
 		return nil, err
@@ -54,7 +55,7 @@ func (cg *checkGrpc) HealthCheck(ctx context.Context) (*HealthCheckStatus, error
 	if err != nil {
 		return nil, err
 	}
-	st := &HealthCheckStatus{
+	st := &entity.HealthCheckStatus{
 		Status: pbst.GetStatus(),
 	}
 	return st, nil

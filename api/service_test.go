@@ -4,15 +4,16 @@ import (
 	"context"
 	"testing"
 
+	"github.com/shoma-www/attend_manager/api/entity"
 	"github.com/shoma-www/attend_manager/core"
 )
 
 type dummyCheckRepository struct {
-	hs  *HealthCheckStatus
+	hs  *entity.HealthCheckStatus
 	err error
 }
 
-func (dc *dummyCheckRepository) HealthCheck(ctx context.Context) (*HealthCheckStatus, error) {
+func (dc *dummyCheckRepository) HealthCheck(ctx context.Context) (*entity.HealthCheckStatus, error) {
 	return dc.hs, dc.err
 }
 
@@ -21,7 +22,7 @@ func TestCheckService_HealthCheck(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		ctx := context.Background()
 		rep := &dummyCheckRepository{
-			hs:  &HealthCheckStatus{Status: "success"},
+			hs:  &entity.HealthCheckStatus{Status: "success"},
 			err: nil,
 		}
 		hs := CheckService{

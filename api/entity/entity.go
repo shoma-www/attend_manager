@@ -1,4 +1,4 @@
-package main
+package entity
 
 // HealthCheckStatus HEalthCheckのEntity
 type HealthCheckStatus struct {
