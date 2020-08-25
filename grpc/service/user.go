@@ -10,13 +10,15 @@ import (
 // User user service
 type User struct {
 	logger core.Logger
+	tr     Transaction
 	ur     UserRepository
 }
 
 // NewUser user service constructor
-func NewUser(l core.Logger, ur UserRepository) *User {
+func NewUser(l core.Logger, tr Transaction, ur UserRepository) *User {
 	return &User{
 		logger: l,
+		tr:     tr,
 		ur:     ur,
 	}
 }
@@ -24,7 +26,7 @@ func NewUser(l core.Logger, ur UserRepository) *User {
 // Register ユーザ登録
 func (u *User) Register(ctx context.Context, userID string, password string) error {
 	u.logger.WithUUID(ctx).Info("register user. id: %s", userID)
-	err := u.ur.Transaction(ctx, func(tctx context.Context) error {
+	err := u.tr.Transaction(ctx, func(tctx context.Context) error {
 		if us, err := u.ur.Get(tctx, userID); err != entity.ErrUserNotFound {
 			if us != nil && len(us) > 0 {
 				return entity.ErrDuplicatedUser

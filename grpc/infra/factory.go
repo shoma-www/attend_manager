@@ -17,7 +17,12 @@ func NewRepoFactory(l core.Logger, db *ent.Client) *RepoFactory {
 	return &RepoFactory{logger: l, dbClient: db}
 }
 
+// CreateTransaction is created transaction
+func (rf *RepoFactory) CreateTransaction() service.Transaction {
+	return &transaction{l: rf.logger, cl: rf.dbClient}
+}
+
 // CreateUserRepository Repositoryつくるぞ
 func (rf *RepoFactory) CreateUserRepository() service.UserRepository {
-	return &userDAO{logger: rf.logger, transaction: &transaction{cl: rf.dbClient}}
+	return &userDAO{logger: rf.logger, cl: rf.dbClient}
 }

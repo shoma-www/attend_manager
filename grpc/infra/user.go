@@ -5,13 +5,14 @@ import (
 
 	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/core"
+	"github.com/shoma-www/attend_manager/grpc/ent"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 )
 
 type userDAO struct {
-	*transaction
 	logger core.Logger
+	cl     *ent.Client
 }
 
 func (ud *userDAO) Get(ctx context.Context, userID string) ([]*entity.User, error) {

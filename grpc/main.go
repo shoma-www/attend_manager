@@ -54,9 +54,10 @@ func main() {
 }
 
 // Register サーバーの登録
-func Register(s *grpc.Server, l core.Logger, repof *infra.RepoFactory) {
+func Register(s *grpc.Server, l core.Logger, factory *infra.RepoFactory) {
 	pb.RegisterCheckServer(s, server.NewCheck(l))
-	ur := repof.CreateUserRepository()
-	us := service.NewUser(l, ur)
+	tr := factory.CreateTransaction()
+	ur := factory.CreateUserRepository()
+	us := service.NewUser(l, tr, ur)
 	pb.RegisterUserServer(s, server.NewUser(l, us))
 }

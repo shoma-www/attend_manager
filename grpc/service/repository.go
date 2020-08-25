@@ -13,7 +13,6 @@ type Transaction interface {
 
 // UserRepository Access Interface
 type UserRepository interface {
-	Transaction
-	Get(ctx context.Context, password string) ([]*entity.User, error)
+	Get(ctx context.Context, userID string) ([]*entity.User, error)
 	Register(ctx context.Context, userID string, password string) (*entity.User, error)
 }
