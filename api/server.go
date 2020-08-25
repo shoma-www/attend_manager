@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/shoma-www/attend_manager/api/config"
+	"github.com/shoma-www/attend_manager/api/handler"
 	"github.com/shoma-www/attend_manager/api/infra"
 	"github.com/shoma-www/attend_manager/core"
 )
@@ -34,7 +35,7 @@ func NewServer(c *config.Config, l core.Logger, repof *infra.RepoFactory) *Serve
 func (s *Server) Init() {
 	r := mux.NewRouter()
 
-	ch := NewCheckHandler(s.logger, s.repof)
+	ch := handler.NewCheckHandler(s.logger, s.repof)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 	m := NewMiddleware(s.logger)
 	r.Use(
