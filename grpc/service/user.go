@@ -42,7 +42,7 @@ func (u *User) Register(ctx context.Context, userID string, password string) err
 		if err != nil {
 			return err
 		}
-		u.logger.WithUUID(tctx).Info("complete registered user. id: %s, uuid: %s", user.UserID, user.UserID)
+		u.logger.WithUUID(tctx).Info("complete registered user. id: %s, uuid: %s", user.UserID, user.ID)
 		return nil
 	})
 
