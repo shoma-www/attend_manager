@@ -8,18 +8,19 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/shoma-www/attend_manager/api/config"
 	"github.com/shoma-www/attend_manager/core"
 )
 
 func main() {
-	path := "./config.yaml"
+	path := "./config/config.yaml"
 	absPath, err := filepath.Abs(path)
 	if err != nil {
 		log.Fatalln(err)
 		return
 	}
 
-	c, err := LoadConfig(absPath)
+	c, err := config.LoadConfig(absPath)
 	if err != nil {
 		log.Fatalln(err)
 		return

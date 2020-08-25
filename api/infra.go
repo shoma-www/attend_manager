@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/shoma-www/attend_manager/api/config"
 	pb "github.com/shoma-www/attend_manager/api/proto"
 	"google.golang.org/grpc"
 )
@@ -24,7 +25,7 @@ type RepoFactory struct {
 }
 
 // NewRepoFactory コンストラクタ
-func NewRepoFactory(c *Config) *RepoFactory {
+func NewRepoFactory(c *config.Config) *RepoFactory {
 	conf := c.Client.Grpc
 	return &RepoFactory{
 		address: fmt.Sprintf("%s:%d", conf.Addr, conf.Port),

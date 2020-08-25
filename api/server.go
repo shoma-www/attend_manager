@@ -8,19 +8,20 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/shoma-www/attend_manager/api/config"
 	"github.com/shoma-www/attend_manager/core"
 )
 
 // Server hhtp.Serverをラップした構造体
 type Server struct {
 	server *http.Server
-	conf   *Config
+	conf   *config.Config
 	logger core.Logger
 	repof  *RepoFactory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *Config, l core.Logger, repof *RepoFactory) *Server {
+func NewServer(c *config.Config, l core.Logger, repof *RepoFactory) *Server {
 	return &Server{
 		conf:   c,
 		logger: l,
