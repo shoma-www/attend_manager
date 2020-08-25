@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/shoma-www/attend_manager/api/config"
+	"github.com/shoma-www/attend_manager/api/infra"
 	"github.com/shoma-www/attend_manager/core"
 )
 
@@ -17,11 +18,11 @@ type Server struct {
 	server *http.Server
 	conf   *config.Config
 	logger core.Logger
-	repof  *RepoFactory
+	repof  *infra.RepoFactory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *config.Config, l core.Logger, repof *RepoFactory) *Server {
+func NewServer(c *config.Config, l core.Logger, repof *infra.RepoFactory) *Server {
 	return &Server{
 		conf:   c,
 		logger: l,

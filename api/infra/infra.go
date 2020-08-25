@@ -1,4 +1,4 @@
-package main
+package infra
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/shoma-www/attend_manager/api/config"
 	"github.com/shoma-www/attend_manager/api/entity"
 	pb "github.com/shoma-www/attend_manager/api/proto"
+	"github.com/shoma-www/attend_manager/api/service"
 	"google.golang.org/grpc"
 )
 
@@ -34,7 +35,7 @@ func NewRepoFactory(c *config.Config) *RepoFactory {
 }
 
 // CreateCheckRepository Repositoryつくるで
-func (rf *RepoFactory) CreateCheckRepository() CheckRepository {
+func (rf *RepoFactory) CreateCheckRepository() service.CheckRepository {
 	return &checkGrpc{address: rf.address}
 }
 

@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/shoma-www/attend_manager/api/config"
+	"github.com/shoma-www/attend_manager/api/infra"
 	"github.com/shoma-www/attend_manager/core"
 )
 
@@ -29,7 +30,7 @@ func main() {
 	logger := core.NewLogger(core.Debug)
 	logger.Info("Start Attend Manager API Server")
 
-	repof := NewRepoFactory(c)
+	repof := infra.NewRepoFactory(c)
 
 	s := NewServer(c, logger, repof)
 	s.Init()
