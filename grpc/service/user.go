@@ -24,27 +24,30 @@ func NewUser(l core.Logger, tr Transaction, ur UserRepository) *User {
 }
 
 // Register ユーザ登録
-func (u *User) Register(ctx context.Context, userID string, password string) error {
+func (u *User) Register(ctx context.Context, userID string, password string) (*entity.User, error) {
 	u.logger.WithUUID(ctx).Info("register user. id: %s", userID)
-	err := u.tr.Transaction(ctx, func(tctx context.Context) error {
+	v, err := u.tr.Transaction(ctx, func(tctx context.Context) (interface{}, error) {
 		if us, err := u.ur.Get(tctx, userID); err != entity.ErrUserNotFound {
 			if us != nil && len(us) > 0 {
-				return entity.ErrDuplicatedUser
+				return nil, entity.ErrDuplicatedUser
 			}
-			return err
+			return nil, err
 		}
 
 		hashedPassword, err := core.GenerateHashedPassword(password)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		user, err := u.ur.Register(tctx, userID, string(hashedPassword))
 		if err != nil {
-			return err
+			return nil, err
 		}
 		u.logger.WithUUID(tctx).Info("complete registered user. id: %s, uuid: %s", user.UserID, user.ID)
-		return nil
+		return user, nil
 	})
 
-	return err
+	if user, ok := v.(*entity.User); ok {
+		return user, err
+	}
+	return nil, err
 }

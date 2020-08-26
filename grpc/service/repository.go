@@ -8,7 +8,7 @@ import (
 
 // Transaction wrapper
 type Transaction interface {
-	Transaction(ctx context.Context, target func(tctx context.Context) error) error
+	Transaction(ctx context.Context, target func(tctx context.Context) (interface{}, error)) (interface{}, error)
 }
 
 // UserRepository Access Interface

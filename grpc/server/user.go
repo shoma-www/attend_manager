@@ -22,7 +22,7 @@ func NewUser(l core.Logger, us *service.User) pb.UserServer {
 func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*proto.RegisterResponse, error) {
 	var message string
 	status := pb.RegisterStatus_SUCCESS
-	err := u.us.Register(ctx, req.UserId, req.Password)
+	_, err := u.us.Register(ctx, req.UserId, req.Password)
 	if err != nil {
 		message = err.Error()
 		status = pb.RegisterStatus_ERROR

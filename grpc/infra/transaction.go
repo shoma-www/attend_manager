@@ -16,20 +16,21 @@ type transaction struct {
 }
 
 func (t *transaction) Transaction(
-	ctx context.Context, target func(tctx context.Context) error) error {
+	ctx context.Context, target func(tctx context.Context) (interface{}, error)) (interface{}, error) {
 	t.l.Debug("start transaction\n")
 	tx, err := t.cl.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	txCtx := context.WithValue(ctx, txKey, tx)
-	if err := target(txCtx); err != nil {
+	v, err := target(txCtx)
+	if err != nil {
 		tx.Rollback()
 		t.l.Debug("rollback transaction\n")
-		return err
+		return nil, err
 	}
 	t.l.Debug("finish transaction\n")
-	return tx.Commit()
+	return v, tx.Commit()
 }
 
 func getTX(ctx context.Context) (*ent.Tx, bool) {

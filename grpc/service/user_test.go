@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 	"github.com/shoma-www/attend_manager/grpc/mock_service"
@@ -13,7 +15,7 @@ import (
 
 type mockTransaction struct{}
 
-func (mockTransaction) Transaction(ctx context.Context, target func(tctx context.Context) error) error {
+func (mockTransaction) Transaction(ctx context.Context, target func(tctx context.Context) (interface{}, error)) (interface{}, error) {
 	return target(ctx)
 }
 
@@ -31,11 +33,21 @@ func TestUser_Register(t *testing.T) {
 		ctx := context.Background()
 		mr := mock_service.NewMockUserRepository(ctrl)
 		mr.EXPECT().Get(ctx, u.UserID).Return(nil, entity.ErrUserNotFound)
-		mr.EXPECT().Register(ctx, u.UserID, gomock.Any()).Return(u, nil)
+		mr.EXPECT().Register(ctx, u.UserID, gomock.Any()).DoAndReturn(
+			func(ctx context.Context, userID string, password string) (*entity.User, error) {
+				return &entity.User{
+					UserID:   userID,
+					Password: password,
+				}, nil
+			})
 
 		us := NewUser(l, mockTransaction{}, mr)
-		if err := us.Register(ctx, u.UserID, u.Password); err != nil {
+		user, err := us.Register(ctx, u.UserID, u.Password)
+		if err != nil {
 			t.Errorf("User.Register() error = %v, wantErr nil", err)
+		}
+		if diff := cmp.Diff(user, u, cmpopts.IgnoreFields(entity.User{}, "Password")); diff != "" {
+			t.Errorf("Register differs:\n%s", diff)
 		}
 	})
 
@@ -51,7 +63,7 @@ func TestUser_Register(t *testing.T) {
 		mr.EXPECT().Get(ctx, u.UserID).Return([]*entity.User{u}, nil)
 
 		us := NewUser(l, mockTransaction{}, mr)
-		if err := us.Register(ctx, u.UserID, u.Password); err != wamtErr {
+		if _, err := us.Register(ctx, u.UserID, u.Password); err != wamtErr {
 			t.Errorf("User.Register() error = %v, wantErr %v", err, wamtErr)
 		}
 	})
@@ -68,7 +80,7 @@ func TestUser_Register(t *testing.T) {
 		mr.EXPECT().Get(ctx, u.UserID).Return(nil, wamtErr)
 
 		us := NewUser(l, mockTransaction{}, mr)
-		if err := us.Register(ctx, u.UserID, u.Password); err != wamtErr {
+		if _, err := us.Register(ctx, u.UserID, u.Password); err != wamtErr {
 			t.Errorf("User.Register() error = %v, wantErr %v", err, wamtErr)
 		}
 	})

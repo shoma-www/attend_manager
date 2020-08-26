@@ -9,7 +9,7 @@ require (
 	github.com/goccy/go-yaml v1.8.0
 	github.com/golang/mock v1.4.4
 	github.com/golang/protobuf v1.4.2
-	github.com/google/go-cmp v0.5.2 // indirect
+	github.com/google/go-cmp v0.5.2
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/mux v1.8.0
 	github.com/kr/text v0.2.0 // indirect
