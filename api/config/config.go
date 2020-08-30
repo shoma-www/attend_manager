@@ -14,17 +14,21 @@ var (
 	ErrorYamlLoad = errors.New("Error loading the yaml file")
 )
 
+type Server struct {
+	Addr string
+	Port int
+}
+
+type Grpc struct {
+	Addr string
+	Port int
+}
+
 // Config サーバーコンフィグ
 type Config struct {
-	Server struct {
-		Addr string
-		Port int
-	}
+	Server
 	Client struct {
-		Grpc struct {
-			Addr string
-			Port int
-		}
+		Grpc
 	}
 }
 
