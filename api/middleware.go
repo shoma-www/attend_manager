@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/google/uuid"
+	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/core"
 )
 
@@ -28,7 +28,7 @@ func NewMiddleware(l core.Logger) *Middleware {
 // AddUUIDWithContext Request のContextにUUIDを追加
 func (m *Middleware) AddUUIDWithContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		uuid := uuid.Must(uuid.NewRandom()).String()
+		uuid := xid.New().String()
 		ctx := context.WithValue(context.Background(), core.UUIDContextKey, uuid)
 		rctx := r.WithContext(ctx)
 		next.ServeHTTP(w, rctx)
