@@ -13,8 +13,8 @@ type Check struct {
 }
 
 // NewCheck constructor
-func NewCheck(l core.Logger, cr CheckRepository) Check {
-	return Check{logger: l, factory: cr}
+func NewCheck(l core.Logger, cr CheckRepository) *Check {
+	return &Check{logger: l, factory: cr}
 }
 
 // HealthCheck GrpcのサーバーにHealthCheckを実施
@@ -23,6 +23,6 @@ func (hs Check) HealthCheck(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	hs.logger.Debug("health check grpc status: %s", status.Status)
+	hs.logger.WithUUID(ctx).Debug("health check grpc status: %s", status.Status)
 	return err
 }

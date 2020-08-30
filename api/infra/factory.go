@@ -31,8 +31,8 @@ func NewFactory(c *config.Config) *Factory {
 	}
 }
 
-// CreateCheckRepository Repositoryつくるで
-func (rf *Factory) CreateCheckRepository() service.CheckRepository {
+// CreateCheck Repositoryつくるで
+func (rf *Factory) CreateCheck() service.CheckRepository {
 	return &checkGrpc{address: rf.address}
 }
 

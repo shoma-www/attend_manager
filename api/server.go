@@ -35,7 +35,8 @@ func NewServer(c *config.Config, l core.Logger, f *infra.Factory) *Server {
 // Init サーバーの初期化。ハンドラーとか設定
 func (s *Server) Init() {
 	r := mux.NewRouter()
-	ch := handler.NewCheckHandler(s.logger, s.factory)
+	cc := service.NewCheck(s.logger, s.factory.CreateCheck())
+	ch := handler.NewCheckHandler(s.logger, cc)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 
 	cs := service.NewUser(s.logger, s.factory.CreateUser())

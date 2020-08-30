@@ -6,20 +6,19 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/shoma-www/attend_manager/api/infra"
 	"github.com/shoma-www/attend_manager/api/service"
 	"github.com/shoma-www/attend_manager/core"
 )
 
 // CheckHandler handler
 type CheckHandler struct {
-	logger  core.Logger
-	factory *infra.Factory
+	logger core.Logger
+	cs     *service.Check
 }
 
 // NewCheckHandler コンストラクタ
-func NewCheckHandler(l core.Logger, f *infra.Factory) *CheckHandler {
-	return &CheckHandler{logger: l, factory: f}
+func NewCheckHandler(l core.Logger, cs *service.Check) *CheckHandler {
+	return &CheckHandler{logger: l, cs: cs}
 }
 
 // HealthCheck ヘルスチェック用API
@@ -33,8 +32,7 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	}
 
-	cs := service.NewCheck(ch.logger.WithUUID(r.Context()), ch.factory.CreateCheckRepository())
-	if err := cs.HealthCheck(ctx); err != nil {
+	if err := ch.cs.HealthCheck(ctx); err != nil {
 		ch.logger.Error(err.Error())
 		status = http.StatusServiceUnavailable
 		body["status"] = "failed"
