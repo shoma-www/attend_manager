@@ -13,5 +13,5 @@ type CheckRepository interface {
 
 // UserRepository Repository
 type UserRepository interface {
-	Resister(ctx context.Context, userID string, password string) (*entity.User, error)
+	Resister(ctx context.Context, userID string, password string) error
 }

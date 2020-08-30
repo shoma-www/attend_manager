@@ -22,7 +22,7 @@ func NewUser(l core.Logger, user *service.User) *User {
 func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	u.logger.WithUUID(ctx).Debug("test")
-	_, err := u.us.Register(ctx, "hoge", "hoge")
+	err := u.us.Register(ctx, "hoge", "hoge")
 	u.logger.WithUUID(ctx).Error(err.Error())
 	w.WriteHeader(http.StatusNotFound)
 }
