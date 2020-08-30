@@ -17,7 +17,7 @@ func (dc *dummyCheckRepository) HealthCheck(ctx context.Context) (*entity.Health
 	return dc.hs, dc.err
 }
 
-func TestCheckService_HealthCheck(t *testing.T) {
+func TestCheck_HealthCheck(t *testing.T) {
 	l := core.NewLogger(core.Debug)
 	t.Run("success", func(t *testing.T) {
 		ctx := context.Background()
@@ -25,12 +25,12 @@ func TestCheckService_HealthCheck(t *testing.T) {
 			hs:  &entity.HealthCheckStatus{Status: "success"},
 			err: nil,
 		}
-		hs := CheckService{
-			logger: l,
-			repo:   rep,
+		hs := Check{
+			logger:  l,
+			factory: rep,
 		}
 		if err := hs.HealthCheck(ctx); err != nil {
-			t.Errorf("CheckService.HealthCheck() error = %v, wantErr nil", err)
+			t.Errorf("Check.HealthCheck() error = %v, wantErr nil", err)
 		}
 	})
 }

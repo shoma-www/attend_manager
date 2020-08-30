@@ -33,7 +33,7 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	}
 
-	cs := service.NewCheckService(ch.logger.WithUUID(r.Context()), ch.factory.CreateCheckRepository())
+	cs := service.NewCheck(ch.logger.WithUUID(r.Context()), ch.factory.CreateCheckRepository())
 	if err := cs.HealthCheck(ctx); err != nil {
 		ch.logger.Error(err.Error())
 		status = http.StatusServiceUnavailable
