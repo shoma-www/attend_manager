@@ -13,13 +13,13 @@ import (
 
 // CheckHandler handler
 type CheckHandler struct {
-	logger core.Logger
-	f      *infra.RepoFactory
+	logger  core.Logger
+	factory *infra.RepoFactory
 }
 
 // NewCheckHandler コンストラクタ
-func NewCheckHandler(l core.Logger, repof *infra.RepoFactory) *CheckHandler {
-	return &CheckHandler{logger: l, f: repof}
+func NewCheckHandler(l core.Logger, f *infra.RepoFactory) *CheckHandler {
+	return &CheckHandler{logger: l, factory: f}
 }
 
 // HealthCheck ヘルスチェック用API
@@ -33,7 +33,7 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		"status": "success",
 	}
 
-	cs := service.NewCheckService(ch.logger.WithUUID(r.Context()), ch.f.CreateCheckRepository())
+	cs := service.NewCheckService(ch.logger.WithUUID(r.Context()), ch.factory.CreateCheckRepository())
 	if err := cs.HealthCheck(ctx); err != nil {
 		ch.logger.Error(err.Error())
 		status = http.StatusServiceUnavailable
