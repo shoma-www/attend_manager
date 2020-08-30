@@ -16,18 +16,18 @@ import (
 
 // Server hhtp.Serverをラップした構造体
 type Server struct {
-	server *http.Server
-	conf   *config.Config
-	logger core.Logger
-	repof  *infra.RepoFactory
+	server  *http.Server
+	conf    *config.Config
+	logger  core.Logger
+	factory *infra.RepoFactory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *config.Config, l core.Logger, repof *infra.RepoFactory) *Server {
+func NewServer(c *config.Config, l core.Logger, f *infra.RepoFactory) *Server {
 	return &Server{
-		conf:   c,
-		logger: l,
-		repof:  repof,
+		conf:    c,
+		logger:  l,
+		factory: f,
 	}
 }
 
@@ -35,8 +35,13 @@ func NewServer(c *config.Config, l core.Logger, repof *infra.RepoFactory) *Serve
 func (s *Server) Init() {
 	r := mux.NewRouter()
 
-	ch := handler.NewCheckHandler(s.logger, s.repof)
+	ch := handler.NewCheckHandler(s.logger, s.factory)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
+
+	ru := r.PathPrefix("/user").Subrouter()
+	u := handler.NewUser(s.logger, s.factory)
+	ru.HandleFunc("/register", u.Register)
+
 	m := NewMiddleware(s.logger)
 	r.Use(
 		m.AddUUIDWithContext,

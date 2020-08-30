@@ -30,9 +30,9 @@ func main() {
 	logger := core.NewLogger(core.Debug)
 	logger.Info("Start Attend Manager API Server")
 
-	repof := infra.NewRepoFactory(c)
+	factory := infra.NewRepoFactory(c)
 
-	s := NewServer(c, logger, repof)
+	s := NewServer(c, logger, factory)
 	s.Init()
 	go s.ListenAndServe()
 
