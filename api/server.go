@@ -11,6 +11,7 @@ import (
 	"github.com/shoma-www/attend_manager/api/config"
 	"github.com/shoma-www/attend_manager/api/handler"
 	"github.com/shoma-www/attend_manager/api/infra"
+	"github.com/shoma-www/attend_manager/api/service"
 	"github.com/shoma-www/attend_manager/core"
 )
 
@@ -37,8 +38,9 @@ func (s *Server) Init() {
 	ch := handler.NewCheckHandler(s.logger, s.factory)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 
+	cs := service.NewUser(s.logger, s.factory.CreateUser())
+	u := handler.NewUser(s.logger, cs)
 	ru := r.PathPrefix("/user").Subrouter()
-	u := handler.NewUser(s.logger, s.factory)
 	ru.HandleFunc("/register", u.Register)
 
 	m := NewMiddleware(s.logger)

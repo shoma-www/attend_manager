@@ -35,3 +35,8 @@ func NewFactory(c *config.Config) *Factory {
 func (rf *Factory) CreateCheckRepository() service.CheckRepository {
 	return &checkGrpc{address: rf.address}
 }
+
+// CreateUser Repositoryつくるで
+func (rf *Factory) CreateUser() service.UserRepository {
+	return nil
+}

@@ -3,23 +3,26 @@ package handler
 import (
 	"net/http"
 
-	"github.com/shoma-www/attend_manager/api/infra"
+	"github.com/shoma-www/attend_manager/api/service"
 	"github.com/shoma-www/attend_manager/core"
 )
 
 // User is handler
 type User struct {
-	logger  core.Logger
-	factory *infra.Factory
+	logger core.Logger
+	us     *service.User
 }
 
 // NewUser コンストラクタ
-func NewUser(l core.Logger, f *infra.Factory) *User {
-	return &User{logger: l, factory: f}
+func NewUser(l core.Logger, user *service.User) *User {
+	return &User{logger: l, us: user}
 }
 
 // Register ユーザ登録
 func (u *User) Register(w http.ResponseWriter, r *http.Request) {
-	u.logger.WithUUID(r.Context()).Debug("test")
+	ctx := r.Context()
+	u.logger.WithUUID(ctx).Debug("test")
+	_, err := u.us.Register(ctx, "hoge", "hoge")
+	u.logger.WithUUID(ctx).Error(err.Error())
 	w.WriteHeader(http.StatusNotFound)
 }
