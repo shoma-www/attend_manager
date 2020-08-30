@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/shoma-www/attend_manager/api/entity"
 	"github.com/shoma-www/attend_manager/core"
 )
 
@@ -26,9 +25,4 @@ func (hs CheckService) HealthCheck(ctx context.Context) error {
 	}
 	hs.logger.Debug("health check grpc status: %s", status.Status)
 	return err
-}
-
-// CheckRepository Repository
-type CheckRepository interface {
-	HealthCheck(ctx context.Context) (*entity.HealthCheckStatus, error)
 }
