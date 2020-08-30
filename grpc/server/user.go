@@ -7,6 +7,8 @@ import (
 	"github.com/shoma-www/attend_manager/grpc/proto"
 	pb "github.com/shoma-www/attend_manager/grpc/proto"
 	"github.com/shoma-www/attend_manager/grpc/service"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type user struct {
@@ -20,16 +22,17 @@ func NewUser(l core.Logger, us *service.User) pb.UserServer {
 }
 
 func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*proto.RegisterResponse, error) {
-	var message string
-	status := pb.RegisterStatus_SUCCESS
+	st := pb.RegisterStatus_SUCCESS
 	_, err := u.us.Register(ctx, req.UserId, req.Password)
 	if err != nil {
-		message = err.Error()
-		status = pb.RegisterStatus_ERROR
-		u.logger.WithUUID(ctx).Error("register err: %s", err)
+		u.logger.WithUUID(ctx).Error("register errpr: %s", err)
+		status := status.New(codes.Internal, err.Error())
+		return nil, status.Err()
 	}
-	return &pb.RegisterResponse{
-		Status:       status,
-		ErrorMessage: message,
-	}, nil
+
+	res := &pb.RegisterResponse{
+		Status: st,
+	}
+
+	return res, nil
 }
