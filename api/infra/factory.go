@@ -38,5 +38,5 @@ func (rf *Factory) CreateCheck() service.CheckRepository {
 
 // CreateUser Repositoryつくるで
 func (rf *Factory) CreateUser() service.UserRepository {
-	return nil
+	return &userGrpc{address: rf.address}
 }
