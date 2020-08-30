@@ -39,7 +39,7 @@ func main() {
 		return
 	}
 	defer cl.Close()
-	repof := infra.NewRepoFactory(logger, cl)
+	repof := infra.NewFactory(logger, cl)
 
 	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
 	Register(s, logger, repof)
@@ -54,7 +54,7 @@ func main() {
 }
 
 // Register サーバーの登録
-func Register(s *grpc.Server, l core.Logger, factory *infra.RepoFactory) {
+func Register(s *grpc.Server, l core.Logger, factory *infra.Factory) {
 	pb.RegisterCheckServer(s, server.NewCheck(l))
 	tr := factory.CreateTransaction()
 	ur := factory.CreateUserRepository()

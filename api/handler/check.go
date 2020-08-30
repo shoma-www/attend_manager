@@ -14,11 +14,11 @@ import (
 // CheckHandler handler
 type CheckHandler struct {
 	logger  core.Logger
-	factory *infra.RepoFactory
+	factory *infra.Factory
 }
 
 // NewCheckHandler コンストラクタ
-func NewCheckHandler(l core.Logger, f *infra.RepoFactory) *CheckHandler {
+func NewCheckHandler(l core.Logger, f *infra.Factory) *CheckHandler {
 	return &CheckHandler{logger: l, factory: f}
 }
 

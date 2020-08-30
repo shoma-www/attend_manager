@@ -19,11 +19,11 @@ type Server struct {
 	server  *http.Server
 	conf    *config.Config
 	logger  core.Logger
-	factory *infra.RepoFactory
+	factory *infra.Factory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *config.Config, l core.Logger, f *infra.RepoFactory) *Server {
+func NewServer(c *config.Config, l core.Logger, f *infra.Factory) *Server {
 	return &Server{
 		conf:    c,
 		logger:  l,
@@ -34,7 +34,6 @@ func NewServer(c *config.Config, l core.Logger, f *infra.RepoFactory) *Server {
 // Init サーバーの初期化。ハンドラーとか設定
 func (s *Server) Init() {
 	r := mux.NewRouter()
-
 	ch := handler.NewCheckHandler(s.logger, s.factory)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 

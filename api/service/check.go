@@ -8,18 +8,18 @@ import (
 
 // CheckService 他システムへのhealthcheck
 type CheckService struct {
-	logger core.Logger
-	repo   CheckRepository
+	logger  core.Logger
+	factory CheckRepository
 }
 
 // NewCheckService constructor
 func NewCheckService(l core.Logger, cr CheckRepository) CheckService {
-	return CheckService{logger: l, repo: cr}
+	return CheckService{logger: l, factory: cr}
 }
 
 // HealthCheck GrpcのサーバーにHealthCheckを実施
 func (hs CheckService) HealthCheck(ctx context.Context) error {
-	status, err := hs.repo.HealthCheck(ctx)
+	status, err := hs.factory.HealthCheck(ctx)
 	if err != nil {
 		return err
 	}

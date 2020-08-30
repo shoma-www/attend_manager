@@ -18,20 +18,20 @@ func createGrpcConn(address string) (*grpc.ClientConn, error) {
 	return con, nil
 }
 
-// RepoFactory Repositoryのファクトリ
-type RepoFactory struct {
+// Factory Repositoryのファクトリ
+type Factory struct {
 	address string
 }
 
-// NewRepoFactory コンストラクタ
-func NewRepoFactory(c *config.Config) *RepoFactory {
+// NewFactory コンストラクタ
+func NewFactory(c *config.Config) *Factory {
 	conf := c.Client.Grpc
-	return &RepoFactory{
+	return &Factory{
 		address: fmt.Sprintf("%s:%d", conf.Addr, conf.Port),
 	}
 }
 
 // CreateCheckRepository Repositoryつくるで
-func (rf *RepoFactory) CreateCheckRepository() service.CheckRepository {
+func (rf *Factory) CreateCheckRepository() service.CheckRepository {
 	return &checkGrpc{address: rf.address}
 }

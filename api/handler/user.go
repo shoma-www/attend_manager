@@ -10,11 +10,11 @@ import (
 // User is handler
 type User struct {
 	logger  core.Logger
-	factory *infra.RepoFactory
+	factory *infra.Factory
 }
 
 // NewUser コンストラクタ
-func NewUser(l core.Logger, f *infra.RepoFactory) *User {
+func NewUser(l core.Logger, f *infra.Factory) *User {
 	return &User{logger: l, factory: f}
 }
 
