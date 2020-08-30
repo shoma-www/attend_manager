@@ -21,6 +21,10 @@ func NewUser(l core.Logger, ur UserRepository) *User {
 func (u *User) Register(ctx context.Context, userID string, password string) error {
 	u.logger.WithUUID(ctx).Info("Create User ID: %s", userID)
 	err := u.ur.Resister(ctx, userID, password)
+	if err != nil {
+		u.logger.WithUUID(ctx).Error("Failed Create User")
+		return err
+	}
 	u.logger.WithUUID(ctx).Info("Success Create User")
 	return err
 }

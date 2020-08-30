@@ -23,6 +23,8 @@ func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	u.logger.WithUUID(ctx).Debug("test")
 	err := u.us.Register(ctx, "hoge", "hoge")
-	u.logger.WithUUID(ctx).Error(err.Error())
-	w.WriteHeader(http.StatusNotFound)
+	if err != nil {
+		u.logger.WithUUID(ctx).Error(err.Error())
+		w.WriteHeader(http.StatusNotFound)
+	}
 }
