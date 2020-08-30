@@ -12,7 +12,7 @@ message RegisterRequesut {
 
 message RegisterResponse {
   RegisterStatus status = 1;
-  string error_message = 2;
+  string message = 2;
 }
 
 enum RegisterStatus {
