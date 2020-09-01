@@ -10,8 +10,12 @@ services:
       - ./:/go/app
     networks:
       - api-link
+      - front-link
     ports:
-      - 8080:8080
+      - 8080
+    environment:
+      VIRTUAL_HOST: api.attend_manager.dev
+      VIRTUAL_PORT: 8080
     depends_on:
       - grpc
 
@@ -49,10 +53,23 @@ services:
     ports:
       - "3306:3306"
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    privileged: true
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - front-link
+
 networks:
   default:
     external:
       name: bridge
+  front-link:
+    driver: bridge
   api-link:
     driver: bridge
   db-link:
