@@ -53,7 +53,6 @@ func (m *Middleware) Logger(next http.Handler) http.Handler {
 			"UA":       r.UserAgent(),
 			"Addr":     r.RemoteAddr,
 			"Ref":      r.Referer(),
-			"Body":     string(bs),
 		}
 		bs, err = json.Marshal(requestMap)
 		if err != nil {
