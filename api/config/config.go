@@ -16,7 +16,6 @@ var (
 
 type Server struct {
 	Addr string
-	Port int
 }
 
 type Grpc struct {

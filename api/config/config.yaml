@@ -1,6 +1,5 @@
 server:
-  addr: api
-  port: 8080
+  addr: ":8080"
 client:
   grpc:
     addr: grpc

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -18,13 +17,13 @@ import (
 // Server hhtp.Serverをラップした構造体
 type Server struct {
 	server  *http.Server
-	conf    *config.Config
+	conf    *config.Server
 	logger  core.Logger
 	factory *infra.Factory
 }
 
 // NewServer コンストラクタ
-func NewServer(c *config.Config, l core.Logger, f *infra.Factory) *Server {
+func NewServer(c *config.Server, l core.Logger, f *infra.Factory) *Server {
 	return &Server{
 		conf:    c,
 		logger:  l,
@@ -52,7 +51,7 @@ func (s *Server) Init() {
 
 	s.server = &http.Server{
 		Handler:      r,
-		Addr:         fmt.Sprintf("%s:%d", s.conf.Server.Addr, s.conf.Server.Port),
+		Addr:         s.conf.Addr,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}

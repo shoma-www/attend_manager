@@ -32,7 +32,7 @@ func main() {
 
 	factory := infra.NewFactory(c)
 
-	s := NewServer(c, logger, factory)
+	s := NewServer(&c.Server, logger, factory)
 	s.Init()
 	go s.ListenAndServe()
 
