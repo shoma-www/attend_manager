@@ -41,7 +41,7 @@ func (s *Server) Init() {
 	cs := service.NewUser(s.logger, s.factory.CreateUser())
 	u := handler.NewUser(s.logger, cs)
 	ru := r.PathPrefix("/user").Subrouter()
-	ru.HandleFunc("/register", u.Register)
+	ru.HandleFunc("/register", u.Register).Methods("POST")
 
 	m := NewMiddleware(s.logger)
 	r.Use(
