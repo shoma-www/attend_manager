@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/pkg/errors"
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/ent"
 )
@@ -20,14 +21,14 @@ func (t *transaction) Transaction(
 	t.l.Debug("start transaction\n")
 	tx, err := t.cl.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "falied begin transaction")
 	}
 	txCtx := context.WithValue(ctx, txKey, tx)
 	v, err := target(txCtx)
 	if err != nil {
 		tx.Rollback()
 		t.l.Debug("rollback transaction\n")
-		return nil, err
+		return nil, errors.Wrap(err, "rollback transaction")
 	}
 	t.l.Debug("finish transaction\n")
 	return v, tx.Commit()

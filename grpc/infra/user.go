@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 
+	"github.com/pkg/errors"
 	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/ent"
@@ -20,7 +21,10 @@ func (ud *userDAO) Get(ctx context.Context, userID string) ([]*entity.User, erro
 	if tx, ok := getTX(ctx); ok {
 		uc = tx.User
 	}
-	us, _ := uc.Query().Where(user.UserIDEQ(userID)).All(ctx)
+	us, err := uc.Query().Where(user.UserIDEQ(userID)).All(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get users")
+	}
 	users := make([]*entity.User, 0, len(us))
 	for _, u := range us {
 		ud.logger.Debug("id: %s, uid: %s, pass: %s", u.UUID, u.UserID, u.Password)

@@ -23,8 +23,7 @@ func NewUser(l core.Logger, us *service.User) pb.UserServer {
 
 func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*proto.RegisterResponse, error) {
 	st := pb.RegisterStatus_SUCCESS
-	_, err := u.us.Register(ctx, req.UserId, req.Password)
-	if err != nil {
+	if _, err := u.us.Register(ctx, req.UserId, req.Password); err != nil {
 		u.logger.WithUUID(ctx).Error("register errpr: %s", err)
 		status := status.New(codes.Internal, err.Error())
 		return nil, status.Err()

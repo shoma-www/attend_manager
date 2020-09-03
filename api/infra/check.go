@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 
+	"github.com/pkg/errors"
 	"github.com/shoma-www/attend_manager/api/entity"
 	pb "github.com/shoma-www/attend_manager/api/proto"
 )
@@ -16,13 +17,13 @@ type checkGrpc struct {
 func (cg *checkGrpc) HealthCheck(ctx context.Context) (*entity.HealthCheckStatus, error) {
 	con, err := createGrpcConn(cg.address)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "create grpc connection error")
 	}
 	defer con.Close()
 	client := pb.NewCheckClient(con)
 	pbst, err := client.HealthCheck(ctx, &pb.HealthRequest{})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "grpc health check error")
 	}
 	st := &entity.HealthCheckStatus{
 		Status: pbst.GetStatus(),
