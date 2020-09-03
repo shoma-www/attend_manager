@@ -1,6 +1,37 @@
 version: '3.4'
 
 services:
+  https:
+    image: steveltn/https-portal
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./resource/certs:/var/lib/https-portal
+    environment:
+      # FORCE_RENEW: 'true'
+      STAGE: local
+      DOMAINS: 'attend-manager.localhost -> http://front:3000, api.attend-manager.localhost -> http://api:8080'
+    depends_on:
+      - api
+      - front
+    networks:
+      - front-link
+
+  front:
+    image: attend_manager_front
+    build:
+      context: .
+      dockerfile: ./front/Dockerfile
+    volumes:
+      - ./front:/app
+    networks:
+      - front-link
+    ports:
+      - 3000
+    tty: true
+
   api:
     image: attend_manager_api
     build:
@@ -13,9 +44,6 @@ services:
       - front-link
     ports:
       - 8080
-    environment:
-      VIRTUAL_HOST: api.attend_manager.dev
-      VIRTUAL_PORT: 8080
     depends_on:
       - grpc
 
@@ -53,17 +81,6 @@ services:
     ports:
       - "3306:3306"
 
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    restart: always
-    privileged: true
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - front-link
-
 networks:
   default:
     external:
@@ -77,3 +94,4 @@ networks:
 
 volumes:
   mysql-data:
+  vhost:
