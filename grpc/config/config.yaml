@@ -1,0 +1,2 @@
+server:
+  addr: grpc:50051

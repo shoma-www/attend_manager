@@ -4,28 +4,36 @@ import (
 	"log"
 	"net"
 	"os"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-
-	"github.com/shoma-www/attend_manager/core"
-	"github.com/shoma-www/attend_manager/grpc/ent"
-	"github.com/shoma-www/attend_manager/grpc/infra"
-	"github.com/shoma-www/attend_manager/grpc/server"
-	"github.com/shoma-www/attend_manager/grpc/service"
+	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/shoma-www/attend_manager/core"
+	"github.com/shoma-www/attend_manager/grpc/config"
+	"github.com/shoma-www/attend_manager/grpc/ent"
+	"github.com/shoma-www/attend_manager/grpc/infra"
 	pb "github.com/shoma-www/attend_manager/grpc/proto"
-)
-
-const (
-	port = ":50051"
+	"github.com/shoma-www/attend_manager/grpc/server"
+	"github.com/shoma-www/attend_manager/grpc/service"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
+	path := "./config/config.yaml"
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+	c, err := config.LoadConfig(absPath)
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+
 	logger := core.NewLogger(core.Debug)
 	logger.Info("Start gRPC Server")
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", c.Server.Addr)
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
