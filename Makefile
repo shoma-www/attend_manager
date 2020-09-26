@@ -1,3 +1,4 @@
+file = default
 clean:
 	rm -f ./api/api
 	rm -f ./grpc/grpc
@@ -17,3 +18,6 @@ migrate-%:
 data-dump:
 	$(eval FILE_NAME := "./resource/mysql/dump/atend_data_dump_$(shell date "+%Y%m%d%H%M%S").sql")
 	mysqldump -u root -p -h 127.0.0.1 -t attend > $(FILE_NAME)
+
+migrate-file:
+	migrate create -ext sql -dir ./resource/mysql/migrations -seq ${file}

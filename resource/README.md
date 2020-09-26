@@ -15,7 +15,7 @@ apt-get install -y migrate
 
 - fileのテンプレートを生成する
 ```sh
-migrate create -ext sql -dir ./resource/mysql/migrations -seq {file_name}
+make migrate-file file=create_cbjpgk
 # 2ファイル出力される
 # 0000001_{file_name}.up.sql
 # 0000001_{file_name}.down.sql
