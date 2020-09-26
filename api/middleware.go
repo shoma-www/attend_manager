@@ -100,3 +100,18 @@ func (rww *rwWrapper) Write(p []byte) (int, error) {
 func (rww *rwWrapper) WriteHeader(statusCode int) {
 	rww.rw.WriteHeader(statusCode)
 }
+
+// CORSMiddleware CORSヘッダーのミドルウェア
+func CORSMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		if req.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, req)
+	})
+}

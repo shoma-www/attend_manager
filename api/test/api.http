@@ -1,2 +1,9 @@
-# ヘルスチェック
-GET http://localhost:8080/healthcheck
+GET https://api.attend-manager.localhost/healthcheck
+###
+
+POST https://api.attend-manager.localhost/user/register
+
+{
+    "user_id": "sample",
+    "password": "fugahoge"
+}

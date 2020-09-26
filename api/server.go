@@ -42,14 +42,16 @@ func (s *Server) Init() {
 	u := handler.NewUser(s.logger, cs)
 	ru := r.
 		PathPrefix("/user").
-		Headers("Content-type", "application/json").
 		Subrouter()
-	ru.HandleFunc("/register", u.Register).Methods("POST")
+	ru.
+		HandleFunc("/register", u.Register).
+		Methods(http.MethodPost, http.MethodOptions)
 
 	m := NewMiddleware(s.logger)
 	r.Use(
 		m.AddUUIDWithContext,
 		m.Logger,
+		CORSMiddleware,
 	)
 
 	s.server = &http.Server{
