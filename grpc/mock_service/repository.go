@@ -89,16 +89,69 @@ func (mr *MockUserRepositoryMockRecorder) Get(ctx, groupID, loginID interface{})
 }
 
 // Register mocks base method
-func (m *MockUserRepository) Register(ctx context.Context, groupID xid.ID, userID, password, name string) (*entity.User, error) {
+func (m *MockUserRepository) Register(ctx context.Context, groupID xid.ID, loginID, password, name string) (*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Register", ctx, groupID, userID, password, name)
+	ret := m.ctrl.Call(m, "Register", ctx, groupID, loginID, password, name)
 	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Register indicates an expected call of Register
-func (mr *MockUserRepositoryMockRecorder) Register(ctx, groupID, userID, password, name interface{}) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) Register(ctx, groupID, loginID, password, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserRepository)(nil).Register), ctx, groupID, userID, password, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserRepository)(nil).Register), ctx, groupID, loginID, password, name)
+}
+
+// MockAttendanceGroupRepository is a mock of AttendanceGroupRepository interface
+type MockAttendanceGroupRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockAttendanceGroupRepositoryMockRecorder
+}
+
+// MockAttendanceGroupRepositoryMockRecorder is the mock recorder for MockAttendanceGroupRepository
+type MockAttendanceGroupRepositoryMockRecorder struct {
+	mock *MockAttendanceGroupRepository
+}
+
+// NewMockAttendanceGroupRepository creates a new mock instance
+func NewMockAttendanceGroupRepository(ctrl *gomock.Controller) *MockAttendanceGroupRepository {
+	mock := &MockAttendanceGroupRepository{ctrl: ctrl}
+	mock.recorder = &MockAttendanceGroupRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockAttendanceGroupRepository) EXPECT() *MockAttendanceGroupRepositoryMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method
+func (m *MockAttendanceGroupRepository) Get(ctx context.Context, name string) (*entity.AttendanceGroup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get", ctx, name)
+	ret0, _ := ret[0].(*entity.AttendanceGroup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get
+func (mr *MockAttendanceGroupRepositoryMockRecorder) Get(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAttendanceGroupRepository)(nil).Get), ctx, name)
+}
+
+// Create mocks base method
+func (m *MockAttendanceGroupRepository) Create(ctx context.Context, name string) (*entity.AttendanceGroup, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", ctx, name)
+	ret0, _ := ret[0].(*entity.AttendanceGroup)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create
+func (mr *MockAttendanceGroupRepositoryMockRecorder) Create(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAttendanceGroupRepository)(nil).Create), ctx, name)
 }

@@ -26,3 +26,8 @@ func (rf *Factory) CreateTransaction() service.Transaction {
 func (rf *Factory) CreateUserRepository() service.UserRepository {
 	return &userDAO{logger: rf.logger, cl: rf.dbClient}
 }
+
+// CreateAttendanceGroupRepository Repositoryつくるぞ
+func (rf *Factory) CreateAttendanceGroupRepository() service.AttendanceGroupRepository {
+	return &attendanceGroupDAO{logger: rf.logger, cl: rf.dbClient}
+}
