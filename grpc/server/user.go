@@ -23,7 +23,7 @@ func NewUser(l core.Logger, us *service.User) pb.UserServer {
 	return &user{logger: l, us: us}
 }
 
-func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*proto.RegisterResponse, error) {
+func (u *user) Register(ctx context.Context, req *proto.UserRegisterRequesut) (*proto.UserRegisterResponse, error) {
 	groupID, err := xid.FromString(req.GetAttendanceGroupId())
 	if err != nil {
 		u.logger.WithUUID(ctx).Error("invalid group id: %s", req.GetAttendanceGroupId())
@@ -33,8 +33,8 @@ func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*prot
 
 	if _, err := u.us.Register(ctx, groupID, req.LoginId, req.Password, req.Name); err != nil {
 		if err == entity.ErrDuplicatedUser {
-			return &pb.RegisterResponse{
-				Status: pb.RegisterStatus_ERROR,
+			return &pb.UserRegisterResponse{
+				Status: pb.UserRegisterStatus_ERROR,
 			}, nil
 		}
 		u.logger.WithUUID(ctx).Error("register errpr: %s", err)
@@ -42,8 +42,8 @@ func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*prot
 		return nil, status.Err()
 	}
 
-	res := &pb.RegisterResponse{
-		Status: pb.RegisterStatus_SUCCESS,
+	res := &pb.UserRegisterResponse{
+		Status: pb.UserRegisterStatus_SUCCESS,
 	}
 
 	return res, nil
