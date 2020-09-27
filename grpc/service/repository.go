@@ -17,3 +17,9 @@ type UserRepository interface {
 	Get(ctx context.Context, groupID xid.ID, loginID string) (*entity.User, error)
 	Register(ctx context.Context, groupID xid.ID, loginID, password, name string) (*entity.User, error)
 }
+
+// AttendanceGroupRepository Access Interface
+type AttendanceGroupRepository interface {
+	Get(ctx context.Context, name string) (*entity.AttendanceGroup, error)
+	Create(ctx context.Context, name string) (*entity.AttendanceGroup, error)
+}
