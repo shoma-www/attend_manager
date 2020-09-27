@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/shoma-www/attend_manager/grpc/ent/attendancegroup"
 	"github.com/shoma-www/attend_manager/grpc/ent/schema"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
@@ -11,20 +12,26 @@ import (
 // code (default values, validators or hooks) and stitches it
 // to their package variables.
 func init() {
+	attendancegroupFields := schema.AttendanceGroup{}.Fields()
+	_ = attendancegroupFields
+	// attendancegroupDescName is the schema descriptor for Name field.
+	attendancegroupDescName := attendancegroupFields[1].Descriptor()
+	// attendancegroup.NameValidator is a validator for the "Name" field. It is called by the builders before save.
+	attendancegroup.NameValidator = attendancegroupDescName.Validators[0].(func(string) error)
 	userFields := schema.User{}.Fields()
 	_ = userFields
-	// userDescUserID is the schema descriptor for UserID field.
-	userDescUserID := userFields[1].Descriptor()
-	// user.UserIDValidator is a validator for the "UserID" field. It is called by the builders before save.
-	user.UserIDValidator = func() func(string) error {
-		validators := userDescUserID.Validators
+	// userDescLoginID is the schema descriptor for LoginID field.
+	userDescLoginID := userFields[1].Descriptor()
+	// user.LoginIDValidator is a validator for the "LoginID" field. It is called by the builders before save.
+	user.LoginIDValidator = func() func(string) error {
+		validators := userDescLoginID.Validators
 		fns := [...]func(string) error{
 			validators[0].(func(string) error),
 			validators[1].(func(string) error),
 		}
-		return func(_UserID string) error {
+		return func(_LoginID string) error {
 			for _, fn := range fns {
-				if err := fn(_UserID); err != nil {
+				if err := fn(_LoginID); err != nil {
 					return err
 				}
 			}
@@ -49,4 +56,8 @@ func init() {
 			return nil
 		}
 	}()
+	// userDescName is the schema descriptor for Name field.
+	userDescName := userFields[3].Descriptor()
+	// user.NameValidator is a validator for the "Name" field. It is called by the builders before save.
+	user.NameValidator = userDescName.Validators[0].(func(string) error)
 }

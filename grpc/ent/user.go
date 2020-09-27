@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/rs/xid"
+	"github.com/shoma-www/attend_manager/grpc/ent/attendancegroup"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
 
@@ -16,28 +17,62 @@ import (
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// UUID holds the value of the "UUID" field.
-	UUID xid.ID `json:"UUID,omitempty"`
-	// UserID holds the value of the "UserID" field.
-	UserID string `json:"UserID,omitempty"`
+	ID xid.ID `json:"id,omitempty"`
+	// LoginID holds the value of the "LoginID" field.
+	LoginID string `json:"LoginID,omitempty"`
 	// Password holds the value of the "Password" field.
 	Password string `json:"-"`
+	// Name holds the value of the "Name" field.
+	Name *string `json:"Name,omitempty"`
 	// CreatedAt holds the value of the "CreatedAt" field.
 	CreatedAt time.Time `json:"CreatedAt,omitempty"`
 	// UpdatedAt holds the value of the "UpdatedAt" field.
 	UpdatedAt time.Time `json:"UpdatedAt,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges                  UserEdges `json:"edges"`
+	attendance_group_users *xid.ID
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Group holds the value of the group edge.
+	Group *AttendanceGroup
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// GroupOrErr returns the Group value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) GroupOrErr() (*AttendanceGroup, error) {
+	if e.loadedTypes[0] {
+		if e.Group == nil {
+			// The edge group was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: attendancegroup.Label}
+		}
+		return e.Group, nil
+	}
+	return nil, &NotLoadedError{edge: "group"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*User) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{},  // id
-		&xid.ID{},         // UUID
-		&sql.NullString{}, // UserID
+		&xid.ID{},         // id
+		&sql.NullString{}, // LoginID
 		&sql.NullString{}, // Password
+		&sql.NullString{}, // Name
 		&sql.NullTime{},   // CreatedAt
 		&sql.NullTime{},   // UpdatedAt
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*User) fkValues() []interface{} {
+	return []interface{}{
+		&xid.ID{}, // attendance_group_users
 	}
 }
 
@@ -47,26 +82,27 @@ func (u *User) assignValues(values ...interface{}) error {
 	if m, n := len(values), len(user.Columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
-	value, ok := values[0].(*sql.NullInt64)
-	if !ok {
-		return fmt.Errorf("unexpected type %T for field id", value)
-	}
-	u.ID = int(value.Int64)
-	values = values[1:]
 	if value, ok := values[0].(*xid.ID); !ok {
-		return fmt.Errorf("unexpected type %T for field UUID", values[0])
+		return fmt.Errorf("unexpected type %T for field id", values[0])
 	} else if value != nil {
-		u.UUID = *value
+		u.ID = *value
+	}
+	values = values[1:]
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field LoginID", values[0])
+	} else if value.Valid {
+		u.LoginID = value.String
 	}
 	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field UserID", values[1])
-	} else if value.Valid {
-		u.UserID = value.String
-	}
-	if value, ok := values[2].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field Password", values[2])
+		return fmt.Errorf("unexpected type %T for field Password", values[1])
 	} else if value.Valid {
 		u.Password = value.String
+	}
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field Name", values[2])
+	} else if value.Valid {
+		u.Name = new(string)
+		*u.Name = value.String
 	}
 	if value, ok := values[3].(*sql.NullTime); !ok {
 		return fmt.Errorf("unexpected type %T for field CreatedAt", values[3])
@@ -78,7 +114,20 @@ func (u *User) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		u.UpdatedAt = value.Time
 	}
+	values = values[5:]
+	if len(values) == len(user.ForeignKeys) {
+		if value, ok := values[0].(*xid.ID); !ok {
+			return fmt.Errorf("unexpected type %T for field attendance_group_users", values[0])
+		} else if value != nil {
+			u.attendance_group_users = value
+		}
+	}
 	return nil
+}
+
+// QueryGroup queries the group edge of the User.
+func (u *User) QueryGroup() *AttendanceGroupQuery {
+	return (&UserClient{config: u.config}).QueryGroup(u)
 }
 
 // Update returns a builder for updating this User.
@@ -104,11 +153,13 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
-	builder.WriteString(", UUID=")
-	builder.WriteString(fmt.Sprintf("%v", u.UUID))
-	builder.WriteString(", UserID=")
-	builder.WriteString(u.UserID)
+	builder.WriteString(", LoginID=")
+	builder.WriteString(u.LoginID)
 	builder.WriteString(", Password=<sensitive>")
+	if v := u.Name; v != nil {
+		builder.WriteString(", Name=")
+		builder.WriteString(*v)
+	}
 	builder.WriteString(", CreatedAt=")
 	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", UpdatedAt=")

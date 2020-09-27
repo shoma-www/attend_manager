@@ -2,8 +2,8 @@ package schema
 
 import (
 	"github.com/facebook/ent"
+	"github.com/facebook/ent/schema/edge"
 	"github.com/facebook/ent/schema/field"
-	"github.com/facebook/ent/schema/index"
 	"github.com/rs/xid"
 )
 
@@ -15,16 +15,20 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("UUID", xid.ID{}).
+		field.UUID("id", xid.ID{}).
 			Unique().
 			Immutable(),
-		field.String("UserID").
+		field.String("LoginID").
 			MaxLen(80).
 			NotEmpty(),
 		field.String("Password").
 			MaxLen(200).
 			NotEmpty().
 			Sensitive(),
+		field.String("Name").
+			MaxLen(20).
+			Nillable().
+			Optional(),
 		field.Time("CreatedAt").
 			Optional(),
 		field.Time("UpdatedAt").
@@ -34,12 +38,14 @@ func (User) Fields() []ent.Field {
 
 // Edges of the User.
 func (User) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("group", AttendanceGroup.Type).
+			Ref("users").
+			Unique(),
+	}
 }
 
 // Indexes of this User.
 func (User) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Fields("UserID", "Password"),
-	}
+	return nil
 }

@@ -6,5 +6,8 @@ import (
 	"github.com/facebook/ent/dialect/sql"
 )
 
+// AttendanceGroup is the predicate function for attendancegroup builders.
+type AttendanceGroup func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

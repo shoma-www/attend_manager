@@ -10,6 +10,8 @@ import (
 	"github.com/facebook/ent/dialect/sql"
 	"github.com/facebook/ent/dialect/sql/sqlgraph"
 	"github.com/facebook/ent/schema/field"
+	"github.com/rs/xid"
+	"github.com/shoma-www/attend_manager/grpc/ent/attendancegroup"
 	"github.com/shoma-www/attend_manager/grpc/ent/predicate"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
@@ -28,15 +30,35 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetUserID sets the UserID field.
-func (uu *UserUpdate) SetUserID(s string) *UserUpdate {
-	uu.mutation.SetUserID(s)
+// SetLoginID sets the LoginID field.
+func (uu *UserUpdate) SetLoginID(s string) *UserUpdate {
+	uu.mutation.SetLoginID(s)
 	return uu
 }
 
 // SetPassword sets the Password field.
 func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
 	uu.mutation.SetPassword(s)
+	return uu
+}
+
+// SetName sets the Name field.
+func (uu *UserUpdate) SetName(s string) *UserUpdate {
+	uu.mutation.SetName(s)
+	return uu
+}
+
+// SetNillableName sets the Name field if the given value is not nil.
+func (uu *UserUpdate) SetNillableName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetName(*s)
+	}
+	return uu
+}
+
+// ClearName clears the value of Name.
+func (uu *UserUpdate) ClearName() *UserUpdate {
+	uu.mutation.ClearName()
 	return uu
 }
 
@@ -80,16 +102,41 @@ func (uu *UserUpdate) ClearUpdatedAt() *UserUpdate {
 	return uu
 }
 
+// SetGroupID sets the group edge to AttendanceGroup by id.
+func (uu *UserUpdate) SetGroupID(id xid.ID) *UserUpdate {
+	uu.mutation.SetGroupID(id)
+	return uu
+}
+
+// SetNillableGroupID sets the group edge to AttendanceGroup by id if the given value is not nil.
+func (uu *UserUpdate) SetNillableGroupID(id *xid.ID) *UserUpdate {
+	if id != nil {
+		uu = uu.SetGroupID(*id)
+	}
+	return uu
+}
+
+// SetGroup sets the group edge to AttendanceGroup.
+func (uu *UserUpdate) SetGroup(a *AttendanceGroup) *UserUpdate {
+	return uu.SetGroupID(a.ID)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
+// ClearGroup clears the group edge to AttendanceGroup.
+func (uu *UserUpdate) ClearGroup() *UserUpdate {
+	uu.mutation.ClearGroup()
+	return uu
+}
+
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
-	if v, ok := uu.mutation.UserID(); ok {
-		if err := user.UserIDValidator(v); err != nil {
-			return 0, &ValidationError{Name: "UserID", err: fmt.Errorf("ent: validator failed for field \"UserID\": %w", err)}
+	if v, ok := uu.mutation.LoginID(); ok {
+		if err := user.LoginIDValidator(v); err != nil {
+			return 0, &ValidationError{Name: "LoginID", err: fmt.Errorf("ent: validator failed for field \"LoginID\": %w", err)}
 		}
 	}
 	if v, ok := uu.mutation.Password(); ok {
@@ -97,6 +144,12 @@ func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "Password", err: fmt.Errorf("ent: validator failed for field \"Password\": %w", err)}
 		}
 	}
+	if v, ok := uu.mutation.Name(); ok {
+		if err := user.NameValidator(v); err != nil {
+			return 0, &ValidationError{Name: "Name", err: fmt.Errorf("ent: validator failed for field \"Name\": %w", err)}
+		}
+	}
+
 	var (
 		err      error
 		affected int
@@ -152,7 +205,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   user.Table,
 			Columns: user.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: user.FieldID,
 			},
 		},
@@ -164,11 +217,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.UserID(); ok {
+	if value, ok := uu.mutation.LoginID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldUserID,
+			Column: user.FieldLoginID,
 		})
 	}
 	if value, ok := uu.mutation.Password(); ok {
@@ -176,6 +229,19 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldPassword,
+		})
+	}
+	if value, ok := uu.mutation.Name(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldName,
+		})
+	}
+	if uu.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldName,
 		})
 	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
@@ -204,6 +270,41 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldUpdatedAt,
 		})
 	}
+	if uu.mutation.GroupCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.GroupTable,
+			Columns: []string{user.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: attendancegroup.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.GroupIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.GroupTable,
+			Columns: []string{user.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: attendancegroup.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -222,15 +323,35 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetUserID sets the UserID field.
-func (uuo *UserUpdateOne) SetUserID(s string) *UserUpdateOne {
-	uuo.mutation.SetUserID(s)
+// SetLoginID sets the LoginID field.
+func (uuo *UserUpdateOne) SetLoginID(s string) *UserUpdateOne {
+	uuo.mutation.SetLoginID(s)
 	return uuo
 }
 
 // SetPassword sets the Password field.
 func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
 	uuo.mutation.SetPassword(s)
+	return uuo
+}
+
+// SetName sets the Name field.
+func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
+	uuo.mutation.SetName(s)
+	return uuo
+}
+
+// SetNillableName sets the Name field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetName(*s)
+	}
+	return uuo
+}
+
+// ClearName clears the value of Name.
+func (uuo *UserUpdateOne) ClearName() *UserUpdateOne {
+	uuo.mutation.ClearName()
 	return uuo
 }
 
@@ -274,16 +395,41 @@ func (uuo *UserUpdateOne) ClearUpdatedAt() *UserUpdateOne {
 	return uuo
 }
 
+// SetGroupID sets the group edge to AttendanceGroup by id.
+func (uuo *UserUpdateOne) SetGroupID(id xid.ID) *UserUpdateOne {
+	uuo.mutation.SetGroupID(id)
+	return uuo
+}
+
+// SetNillableGroupID sets the group edge to AttendanceGroup by id if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableGroupID(id *xid.ID) *UserUpdateOne {
+	if id != nil {
+		uuo = uuo.SetGroupID(*id)
+	}
+	return uuo
+}
+
+// SetGroup sets the group edge to AttendanceGroup.
+func (uuo *UserUpdateOne) SetGroup(a *AttendanceGroup) *UserUpdateOne {
+	return uuo.SetGroupID(a.ID)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
+// ClearGroup clears the group edge to AttendanceGroup.
+func (uuo *UserUpdateOne) ClearGroup() *UserUpdateOne {
+	uuo.mutation.ClearGroup()
+	return uuo
+}
+
 // Save executes the query and returns the updated entity.
 func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
-	if v, ok := uuo.mutation.UserID(); ok {
-		if err := user.UserIDValidator(v); err != nil {
-			return nil, &ValidationError{Name: "UserID", err: fmt.Errorf("ent: validator failed for field \"UserID\": %w", err)}
+	if v, ok := uuo.mutation.LoginID(); ok {
+		if err := user.LoginIDValidator(v); err != nil {
+			return nil, &ValidationError{Name: "LoginID", err: fmt.Errorf("ent: validator failed for field \"LoginID\": %w", err)}
 		}
 	}
 	if v, ok := uuo.mutation.Password(); ok {
@@ -291,6 +437,12 @@ func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
 			return nil, &ValidationError{Name: "Password", err: fmt.Errorf("ent: validator failed for field \"Password\": %w", err)}
 		}
 	}
+	if v, ok := uuo.mutation.Name(); ok {
+		if err := user.NameValidator(v); err != nil {
+			return nil, &ValidationError{Name: "Name", err: fmt.Errorf("ent: validator failed for field \"Name\": %w", err)}
+		}
+	}
+
 	var (
 		err  error
 		node *User
@@ -346,7 +498,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Table:   user.Table,
 			Columns: user.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: user.FieldID,
 			},
 		},
@@ -356,11 +508,11 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing User.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := uuo.mutation.UserID(); ok {
+	if value, ok := uuo.mutation.LoginID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldUserID,
+			Column: user.FieldLoginID,
 		})
 	}
 	if value, ok := uuo.mutation.Password(); ok {
@@ -368,6 +520,19 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldPassword,
+		})
+	}
+	if value, ok := uuo.mutation.Name(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldName,
+		})
+	}
+	if uuo.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldName,
 		})
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {
@@ -395,6 +560,41 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeTime,
 			Column: user.FieldUpdatedAt,
 		})
+	}
+	if uuo.mutation.GroupCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.GroupTable,
+			Columns: []string{user.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: attendancegroup.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.GroupIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.GroupTable,
+			Columns: []string{user.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: attendancegroup.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	u = &User{config: uuo.config}
 	_spec.Assign = u.assignValues

@@ -11,6 +11,7 @@ import (
 	"github.com/facebook/ent/dialect/sql/sqlgraph"
 	"github.com/facebook/ent/schema/field"
 	"github.com/rs/xid"
+	"github.com/shoma-www/attend_manager/grpc/ent/attendancegroup"
 	"github.com/shoma-www/attend_manager/grpc/ent/user"
 )
 
@@ -21,21 +22,29 @@ type UserCreate struct {
 	hooks    []Hook
 }
 
-// SetUUID sets the UUID field.
-func (uc *UserCreate) SetUUID(x xid.ID) *UserCreate {
-	uc.mutation.SetUUID(x)
-	return uc
-}
-
-// SetUserID sets the UserID field.
-func (uc *UserCreate) SetUserID(s string) *UserCreate {
-	uc.mutation.SetUserID(s)
+// SetLoginID sets the LoginID field.
+func (uc *UserCreate) SetLoginID(s string) *UserCreate {
+	uc.mutation.SetLoginID(s)
 	return uc
 }
 
 // SetPassword sets the Password field.
 func (uc *UserCreate) SetPassword(s string) *UserCreate {
 	uc.mutation.SetPassword(s)
+	return uc
+}
+
+// SetName sets the Name field.
+func (uc *UserCreate) SetName(s string) *UserCreate {
+	uc.mutation.SetName(s)
+	return uc
+}
+
+// SetNillableName sets the Name field if the given value is not nil.
+func (uc *UserCreate) SetNillableName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetName(*s)
+	}
 	return uc
 }
 
@@ -65,6 +74,31 @@ func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
 		uc.SetUpdatedAt(*t)
 	}
 	return uc
+}
+
+// SetID sets the id field.
+func (uc *UserCreate) SetID(x xid.ID) *UserCreate {
+	uc.mutation.SetID(x)
+	return uc
+}
+
+// SetGroupID sets the group edge to AttendanceGroup by id.
+func (uc *UserCreate) SetGroupID(id xid.ID) *UserCreate {
+	uc.mutation.SetGroupID(id)
+	return uc
+}
+
+// SetNillableGroupID sets the group edge to AttendanceGroup by id if the given value is not nil.
+func (uc *UserCreate) SetNillableGroupID(id *xid.ID) *UserCreate {
+	if id != nil {
+		uc = uc.SetGroupID(*id)
+	}
+	return uc
+}
+
+// SetGroup sets the group edge to AttendanceGroup.
+func (uc *UserCreate) SetGroup(a *AttendanceGroup) *UserCreate {
+	return uc.SetGroupID(a.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -114,15 +148,12 @@ func (uc *UserCreate) SaveX(ctx context.Context) *User {
 }
 
 func (uc *UserCreate) preSave() error {
-	if _, ok := uc.mutation.UUID(); !ok {
-		return &ValidationError{Name: "UUID", err: errors.New("ent: missing required field \"UUID\"")}
+	if _, ok := uc.mutation.LoginID(); !ok {
+		return &ValidationError{Name: "LoginID", err: errors.New("ent: missing required field \"LoginID\"")}
 	}
-	if _, ok := uc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "UserID", err: errors.New("ent: missing required field \"UserID\"")}
-	}
-	if v, ok := uc.mutation.UserID(); ok {
-		if err := user.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "UserID", err: fmt.Errorf("ent: validator failed for field \"UserID\": %w", err)}
+	if v, ok := uc.mutation.LoginID(); ok {
+		if err := user.LoginIDValidator(v); err != nil {
+			return &ValidationError{Name: "LoginID", err: fmt.Errorf("ent: validator failed for field \"LoginID\": %w", err)}
 		}
 	}
 	if _, ok := uc.mutation.Password(); !ok {
@@ -131,6 +162,11 @@ func (uc *UserCreate) preSave() error {
 	if v, ok := uc.mutation.Password(); ok {
 		if err := user.PasswordValidator(v); err != nil {
 			return &ValidationError{Name: "Password", err: fmt.Errorf("ent: validator failed for field \"Password\": %w", err)}
+		}
+	}
+	if v, ok := uc.mutation.Name(); ok {
+		if err := user.NameValidator(v); err != nil {
+			return &ValidationError{Name: "Name", err: fmt.Errorf("ent: validator failed for field \"Name\": %w", err)}
 		}
 	}
 	return nil
@@ -144,8 +180,6 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	u.ID = int(id)
 	return u, nil
 }
 
@@ -155,26 +189,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: user.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
+				Type:   field.TypeUUID,
 				Column: user.FieldID,
 			},
 		}
 	)
-	if value, ok := uc.mutation.UUID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: user.FieldUUID,
-		})
-		u.UUID = value
+	if id, ok := uc.mutation.ID(); ok {
+		u.ID = id
+		_spec.ID.Value = id
 	}
-	if value, ok := uc.mutation.UserID(); ok {
+	if value, ok := uc.mutation.LoginID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldUserID,
+			Column: user.FieldLoginID,
 		})
-		u.UserID = value
+		u.LoginID = value
 	}
 	if value, ok := uc.mutation.Password(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -183,6 +213,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldPassword,
 		})
 		u.Password = value
+	}
+	if value, ok := uc.mutation.Name(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldName,
+		})
+		u.Name = &value
 	}
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -199,6 +237,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldUpdatedAt,
 		})
 		u.UpdatedAt = value
+	}
+	if nodes := uc.mutation.GroupIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.GroupTable,
+			Columns: []string{user.GroupColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: attendancegroup.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return u, _spec
 }
@@ -242,8 +299,6 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 				if err != nil {
 					return nil, err
 				}
-				id := specs[i].ID.Value.(int64)
-				nodes[i].ID = int(id)
 				return nodes[i], nil
 			})
 			for i := len(builder.hooks) - 1; i >= 0; i-- {

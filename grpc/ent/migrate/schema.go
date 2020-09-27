@@ -8,34 +8,52 @@ import (
 )
 
 var (
-	// UsersColumns holds the columns for the "users" table.
-	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "uuid", Type: field.TypeUUID, Unique: true},
-		{Name: "user_id", Type: field.TypeString, Size: 80},
-		{Name: "password", Type: field.TypeString, Size: 200},
+	// AttendanceGroupsColumns holds the columns for the "attendance_groups" table.
+	AttendanceGroupsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "name", Type: field.TypeString, Nullable: true, Size: 20},
 		{Name: "created_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}
+	// AttendanceGroupsTable holds the schema information for the "attendance_groups" table.
+	AttendanceGroupsTable = &schema.Table{
+		Name:        "attendance_groups",
+		Columns:     AttendanceGroupsColumns,
+		PrimaryKey:  []*schema.Column{AttendanceGroupsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// UsersColumns holds the columns for the "users" table.
+	UsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "login_id", Type: field.TypeString, Size: 80},
+		{Name: "password", Type: field.TypeString, Size: 200},
+		{Name: "name", Type: field.TypeString, Nullable: true, Size: 20},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "attendance_group_users", Type: field.TypeUUID, Nullable: true},
+	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
-		Name:        "users",
-		Columns:     UsersColumns,
-		PrimaryKey:  []*schema.Column{UsersColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
-		Indexes: []*schema.Index{
+		Name:       "users",
+		Columns:    UsersColumns,
+		PrimaryKey: []*schema.Column{UsersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
 			{
-				Name:    "user_user_id_password",
-				Unique:  false,
-				Columns: []*schema.Column{UsersColumns[2], UsersColumns[3]},
+				Symbol:  "users_attendance_groups_users",
+				Columns: []*schema.Column{UsersColumns[6]},
+
+				RefColumns: []*schema.Column{AttendanceGroupsColumns[0]},
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AttendanceGroupsTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	UsersTable.ForeignKeys[0].RefTable = AttendanceGroupsTable
 }

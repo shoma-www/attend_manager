@@ -7,34 +7,51 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUUID holds the string denoting the uuid field in the database.
-	FieldUUID = "uuid"
-	// FieldUserID holds the string denoting the userid field in the database.
-	FieldUserID = "user_id"
+	// FieldLoginID holds the string denoting the loginid field in the database.
+	FieldLoginID = "login_id"
 	// FieldPassword holds the string denoting the password field in the database.
 	FieldPassword = "password"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
 	// FieldCreatedAt holds the string denoting the createdat field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updatedat field in the database.
 	FieldUpdatedAt = "updated_at"
 
+	// EdgeGroup holds the string denoting the group edge name in mutations.
+	EdgeGroup = "group"
+
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// GroupTable is the table the holds the group relation/edge.
+	GroupTable = "users"
+	// GroupInverseTable is the table name for the AttendanceGroup entity.
+	// It exists in this package in order to avoid circular dependency with the "attendancegroup" package.
+	GroupInverseTable = "attendance_groups"
+	// GroupColumn is the table column denoting the group relation/edge.
+	GroupColumn = "attendance_group_users"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldUUID,
-	FieldUserID,
+	FieldLoginID,
 	FieldPassword,
+	FieldName,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the User type.
+var ForeignKeys = []string{
+	"attendance_group_users",
+}
+
 var (
-	// UserIDValidator is a validator for the "UserID" field. It is called by the builders before save.
-	UserIDValidator func(string) error
+	// LoginIDValidator is a validator for the "LoginID" field. It is called by the builders before save.
+	LoginIDValidator func(string) error
 	// PasswordValidator is a validator for the "Password" field. It is called by the builders before save.
 	PasswordValidator func(string) error
+	// NameValidator is a validator for the "Name" field. It is called by the builders before save.
+	NameValidator func(string) error
 )
