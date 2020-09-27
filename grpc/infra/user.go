@@ -16,39 +16,47 @@ type userDAO struct {
 	cl     *ent.Client
 }
 
-func (ud *userDAO) Get(ctx context.Context, userID string) ([]*entity.User, error) {
-	uc := ud.cl.User
+func (ud *userDAO) Get(ctx context.Context, groupID xid.ID, loginID string) (*entity.User, error) {
+	gr := ud.cl.AttendanceGroup
 	if tx, ok := getTX(ctx); ok {
-		uc = tx.User
+		gr = tx.AttendanceGroup
 	}
-	us, err := uc.Query().Where(user.UserIDEQ(userID)).All(ctx)
+	group, err := gr.Get(ctx, groupID)
 	if err != nil {
+		return nil, errors.Wrap(err, "failed to get attendance groups in users")
+	}
+
+	u, err := group.QueryUsers().Where(user.LoginID(loginID)).First(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, entity.ErrUserNotFound
+		}
 		return nil, errors.Wrap(err, "failed to get users")
 	}
-	users := make([]*entity.User, 0, len(us))
-	for _, u := range us {
-		ud.logger.Debug("id: %s, uid: %s, pass: %s", u.UUID, u.UserID, u.Password)
-		users = append(users, &entity.User{
-			ID:       u.UUID.String(),
-			UserID:   u.UserID,
-			Password: u.Password,
-		})
+	ud.logger.Debug("id: %s, group ID:%s, loginID: %s, pass: %s", u.ID, groupID, u.LoginID, u.Password)
+	user := &entity.User{
+		ID:       u.ID,
+		GroupID:  groupID,
+		LoginID:  u.LoginID,
+		Password: u.Password,
 	}
-	if len(users) > 0 {
-		return users, nil
+	if u.Name != nil {
+		user.Name = *u.Name
 	}
-	return nil, entity.ErrUserNotFound
+	return user, nil
 }
 
-func (ud *userDAO) Register(ctx context.Context, userID, password string) (*entity.User, error) {
+func (ud *userDAO) Register(ctx context.Context, groupID xid.ID, logiinID, password, name string) (*entity.User, error) {
 	uc := ud.cl.User
 	if tx, ok := getTX(ctx); ok {
 		uc = tx.User
 	}
 	u, err := uc.Create().
-		SetUUID(xid.New()).
-		SetUserID(userID).
+		SetID(xid.New()).
+		SetGroupID(groupID).
+		SetLoginID(logiinID).
 		SetPassword(password).
+		SetName(name).
 		Save(ctx)
 
 	if err != nil {
@@ -56,8 +64,10 @@ func (ud *userDAO) Register(ctx context.Context, userID, password string) (*enti
 	}
 
 	user := &entity.User{
-		ID:       u.UUID.String(),
-		UserID:   u.UserID,
+		ID:       u.ID,
+		GroupID:  groupID,
+		LoginID:  u.LoginID,
+		Name:     name,
 		Password: u.Password,
 	}
 

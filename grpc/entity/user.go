@@ -1,12 +1,18 @@
 package entity
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/rs/xid"
+)
 
 // User User type
 type User struct {
-	ID       string
-	UserID   string
+	ID       xid.ID
+	GroupID  xid.ID
+	LoginID  string
 	Password string
+	Name     string
 }
 
 // Error UserのError定義

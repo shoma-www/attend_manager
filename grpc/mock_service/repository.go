@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	xid "github.com/rs/xid"
 	entity "github.com/shoma-www/attend_manager/grpc/entity"
 	reflect "reflect"
 )
@@ -35,11 +36,12 @@ func (m *MockTransaction) EXPECT() *MockTransactionMockRecorder {
 }
 
 // Transaction mocks base method
-func (m *MockTransaction) Transaction(ctx context.Context, target func(context.Context) error) error {
+func (m *MockTransaction) Transaction(ctx context.Context, target func(context.Context) (interface{}, error)) (interface{}, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Transaction", ctx, target)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Transaction indicates an expected call of Transaction
@@ -72,31 +74,31 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockUserRepository) Get(ctx context.Context, userID string) ([]*entity.User, error) {
+func (m *MockUserRepository) Get(ctx context.Context, groupID xid.ID, loginID string) (*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, userID)
-	ret0, _ := ret[0].([]*entity.User)
+	ret := m.ctrl.Call(m, "Get", ctx, groupID, loginID)
+	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockUserRepositoryMockRecorder) Get(ctx, userID interface{}) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) Get(ctx, groupID, loginID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserRepository)(nil).Get), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUserRepository)(nil).Get), ctx, groupID, loginID)
 }
 
 // Register mocks base method
-func (m *MockUserRepository) Register(ctx context.Context, userID, password string) (*entity.User, error) {
+func (m *MockUserRepository) Register(ctx context.Context, groupID xid.ID, userID, password, name string) (*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Register", ctx, userID, password)
+	ret := m.ctrl.Call(m, "Register", ctx, groupID, userID, password, name)
 	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Register indicates an expected call of Register
-func (mr *MockUserRepositoryMockRecorder) Register(ctx, userID, password interface{}) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) Register(ctx, groupID, userID, password, name interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserRepository)(nil).Register), ctx, userID, password)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserRepository)(nil).Register), ctx, groupID, userID, password, name)
 }

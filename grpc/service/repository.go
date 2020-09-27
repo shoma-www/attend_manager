@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 )
 
@@ -13,6 +14,6 @@ type Transaction interface {
 
 // UserRepository Access Interface
 type UserRepository interface {
-	Get(ctx context.Context, userID string) ([]*entity.User, error)
-	Register(ctx context.Context, userID string, password string) (*entity.User, error)
+	Get(ctx context.Context, groupID xid.ID, loginID string) (*entity.User, error)
+	Register(ctx context.Context, groupID xid.ID, loginID, password, name string) (*entity.User, error)
 }

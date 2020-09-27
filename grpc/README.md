@@ -33,3 +33,6 @@ go install github.com/protocolbuffers/protobuf-go
 - generate file
 `go generate ./grpc/ent`
 
+### mockの生成
+- interfaceからmockを生成
+`mockgen -source grpc/service/repository.go -destination grpc/mock_service/repository.go`

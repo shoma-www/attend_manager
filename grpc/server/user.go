@@ -3,7 +3,9 @@ package server
 import (
 	"context"
 
+	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/core"
+	"github.com/shoma-www/attend_manager/grpc/entity"
 	"github.com/shoma-www/attend_manager/grpc/proto"
 	pb "github.com/shoma-www/attend_manager/grpc/proto"
 	"github.com/shoma-www/attend_manager/grpc/service"
@@ -22,15 +24,26 @@ func NewUser(l core.Logger, us *service.User) pb.UserServer {
 }
 
 func (u *user) Register(ctx context.Context, req *proto.RegisterRequesut) (*proto.RegisterResponse, error) {
-	st := pb.RegisterStatus_SUCCESS
-	if _, err := u.us.Register(ctx, req.UserId, req.Password); err != nil {
+	groupID, err := xid.FromString(req.GetAttendanceGroupId())
+	if err != nil {
+		u.logger.WithUUID(ctx).Error("invalid group id: %s", req.GetAttendanceGroupId())
+		status := status.New(codes.Internal, err.Error())
+		return nil, status.Err()
+	}
+
+	if _, err := u.us.Register(ctx, groupID, req.LoginId, req.Password, req.Name); err != nil {
+		if err == entity.ErrDuplicatedUser {
+			return &pb.RegisterResponse{
+				Status: pb.RegisterStatus_ERROR,
+			}, nil
+		}
 		u.logger.WithUUID(ctx).Error("register errpr: %s", err)
 		status := status.New(codes.Internal, err.Error())
 		return nil, status.Err()
 	}
 
 	res := &pb.RegisterResponse{
-		Status: st,
+		Status: pb.RegisterStatus_SUCCESS,
 	}
 
 	return res, nil

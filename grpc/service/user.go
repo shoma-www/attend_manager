@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/rs/xid"
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/entity"
 )
@@ -24,11 +25,11 @@ func NewUser(l core.Logger, tr Transaction, ur UserRepository) *User {
 }
 
 // Register ユーザ登録
-func (u *User) Register(ctx context.Context, userID string, password string) (*entity.User, error) {
-	u.logger.WithUUID(ctx).Info("register user. id: %s", userID)
+func (u *User) Register(ctx context.Context, groupID xid.ID, loginID, password, name string) (*entity.User, error) {
+	u.logger.WithUUID(ctx).Info("register user. id: %s", loginID)
 	v, err := u.tr.Transaction(ctx, func(tctx context.Context) (interface{}, error) {
-		if us, err := u.ur.Get(tctx, userID); err != entity.ErrUserNotFound {
-			if us != nil && len(us) > 0 {
+		if us, err := u.ur.Get(tctx, groupID, loginID); err != entity.ErrUserNotFound {
+			if us != nil {
 				return nil, entity.ErrDuplicatedUser
 			}
 			return nil, err
@@ -38,11 +39,11 @@ func (u *User) Register(ctx context.Context, userID string, password string) (*e
 		if err != nil {
 			return nil, err
 		}
-		user, err := u.ur.Register(tctx, userID, string(hashedPassword))
+		user, err := u.ur.Register(tctx, groupID, loginID, string(hashedPassword), name)
 		if err != nil {
 			return nil, err
 		}
-		u.logger.WithUUID(tctx).Info("complete registered user. id: %s, uuid: %s", user.UserID, user.ID)
+		u.logger.WithUUID(tctx).Info("complete registered user. login id: %s, id: %s", user.LoginID, user.ID)
 		return user, nil
 	})
 
