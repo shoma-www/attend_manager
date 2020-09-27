@@ -40,7 +40,7 @@ func (g *AttendanceGroup) Create(ctx context.Context, groupName, loginID, passwo
 			return nil, err
 		}
 
-		group, err := g.gr.Create(ctx, groupName)
+		group, err := g.gr.Create(tctx, groupName)
 		if err != nil {
 			return nil, err
 		}

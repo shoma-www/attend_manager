@@ -47,10 +47,10 @@ func main() {
 		return
 	}
 	defer cl.Close()
-	repof := infra.NewFactory(logger, cl)
+	rFactory := infra.NewFactory(logger, cl)
 
 	s := grpc.NewServer(grpc.UnaryInterceptor(LoggingInterceptor(logger)))
-	Register(s, logger, repof)
+	Register(s, logger, rFactory)
 
 	reflection.Register(s)
 	if err = s.Serve(lis); err != nil {
@@ -68,4 +68,8 @@ func Register(s *grpc.Server, l core.Logger, factory *infra.Factory) {
 	ur := factory.CreateUserRepository()
 	us := service.NewUser(l, tr, ur)
 	pb.RegisterUserServer(s, server.NewUser(l, us))
+
+	gr := factory.CreateAttendanceGroupRepository()
+	gs := service.NewAttendanceGroup(l, tr, gr, ur)
+	pb.RegisterAttendanceGroupServer(s, server.NewAttendanceGroup(l, gs))
 }

@@ -27,6 +27,11 @@ go install github.com/protocolbuffers/protobuf-go
 - grpcをたたく
 `grpcurl -plaintext localhost:50051  proto.Check.HealthCheck`(proto.Check/HealthCheckでも可)
 
+```bash
+grpcurl -plaintext localhost:50051 proto.AttendanceGroup/Create\
+-d '{"group_name": "nakamura family", "login_id": "root", "password": "root", "user_name": "中村家"}'
+```
+
 ### entの生成
 - generate schema
 `entc init User`
