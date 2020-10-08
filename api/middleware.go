@@ -41,13 +41,13 @@ func (m *Middleware) Logger(next http.Handler) http.Handler {
 		l := m.logger.SetUUID(xid.New().String())
 
 		ctx := core.SetLogger(r.Context(), l)
-		bs, err := ioutil.ReadAll(r.Body)
+		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			l.Error("Failed read from r.body. err=%s", err.Error())
 			next.ServeHTTP(w, r)
 			return
 		}
-		r.Body = ioutil.NopCloser(bytes.NewBuffer(bs))
+		r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 		requestMap := map[string]string{
 			"Host":     r.Host,
 			"Method":   r.Method,
@@ -57,7 +57,7 @@ func (m *Middleware) Logger(next http.Handler) http.Handler {
 			"Addr":     r.RemoteAddr,
 			"Ref":      r.Referer(),
 		}
-		bs, err = json.Marshal(requestMap)
+		bs, err := json.Marshal(requestMap)
 		if err != nil {
 			l.Error("Failed read from request. err=%s", err.Error())
 			next.ServeHTTP(w, r)
@@ -65,6 +65,7 @@ func (m *Middleware) Logger(next http.Handler) http.Handler {
 		}
 
 		l.Info("[Request] %s %s %s, json: %s", r.Method, r.RequestURI, r.Proto, string(bs))
+		l.Debug("[Request] Body: %s", string(body))
 
 		var sb strings.Builder
 		wres := NewRWWrapper(w, &sb)
