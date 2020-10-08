@@ -40,7 +40,7 @@ func main() {
 		return
 	}
 
-	cl, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend")
+	cl, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend?parseTime=true")
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
