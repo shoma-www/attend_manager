@@ -2,20 +2,22 @@ syntax = "proto3";
 package proto;
 
 service User {
-  rpc Register (RegisterRequesut) returns (RegisterResponse) {}
+  rpc Register (UserRegisterRequesut) returns (UserRegisterResponse) {}
 }
 
-message RegisterRequesut {
-  string user_id = 1;
-  string password = 2;
+message UserRegisterRequesut {
+  string attendance_group_id = 1;
+  string login_id = 2;
+  string password = 3;
+  string name = 4;
 }
 
-message RegisterResponse {
-  RegisterStatus status = 1;
+message UserRegisterResponse {
+  UserRegisterStatus status = 1;
   string message = 2;
 }
 
-enum RegisterStatus {
+enum UserRegisterStatus {
   UNKNOWN = 0;
   SUCCESS = 1;
   ERROR = 2;

@@ -29,66 +29,68 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type RegisterStatus int32
+type UserRegisterStatus int32
 
 const (
-	RegisterStatus_UNKNOWN RegisterStatus = 0
-	RegisterStatus_SUCCESS RegisterStatus = 1
-	RegisterStatus_ERROR   RegisterStatus = 2
+	UserRegisterStatus_UNKNOWN UserRegisterStatus = 0
+	UserRegisterStatus_SUCCESS UserRegisterStatus = 1
+	UserRegisterStatus_ERROR   UserRegisterStatus = 2
 )
 
-// Enum value maps for RegisterStatus.
+// Enum value maps for UserRegisterStatus.
 var (
-	RegisterStatus_name = map[int32]string{
+	UserRegisterStatus_name = map[int32]string{
 		0: "UNKNOWN",
 		1: "SUCCESS",
 		2: "ERROR",
 	}
-	RegisterStatus_value = map[string]int32{
+	UserRegisterStatus_value = map[string]int32{
 		"UNKNOWN": 0,
 		"SUCCESS": 1,
 		"ERROR":   2,
 	}
 )
 
-func (x RegisterStatus) Enum() *RegisterStatus {
-	p := new(RegisterStatus)
+func (x UserRegisterStatus) Enum() *UserRegisterStatus {
+	p := new(UserRegisterStatus)
 	*p = x
 	return p
 }
 
-func (x RegisterStatus) String() string {
+func (x UserRegisterStatus) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (RegisterStatus) Descriptor() protoreflect.EnumDescriptor {
+func (UserRegisterStatus) Descriptor() protoreflect.EnumDescriptor {
 	return file_grpc_proto_user_proto_enumTypes[0].Descriptor()
 }
 
-func (RegisterStatus) Type() protoreflect.EnumType {
+func (UserRegisterStatus) Type() protoreflect.EnumType {
 	return &file_grpc_proto_user_proto_enumTypes[0]
 }
 
-func (x RegisterStatus) Number() protoreflect.EnumNumber {
+func (x UserRegisterStatus) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use RegisterStatus.Descriptor instead.
-func (RegisterStatus) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use UserRegisterStatus.Descriptor instead.
+func (UserRegisterStatus) EnumDescriptor() ([]byte, []int) {
 	return file_grpc_proto_user_proto_rawDescGZIP(), []int{0}
 }
 
-type RegisterRequesut struct {
+type UserRegisterRequesut struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId   string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	AttendanceGroupId string `protobuf:"bytes,1,opt,name=attendance_group_id,json=attendanceGroupId,proto3" json:"attendance_group_id,omitempty"`
+	LoginId           string `protobuf:"bytes,2,opt,name=login_id,json=loginId,proto3" json:"login_id,omitempty"`
+	Password          string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Name              string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 }
 
-func (x *RegisterRequesut) Reset() {
-	*x = RegisterRequesut{}
+func (x *UserRegisterRequesut) Reset() {
+	*x = UserRegisterRequesut{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_grpc_proto_user_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,13 +98,13 @@ func (x *RegisterRequesut) Reset() {
 	}
 }
 
-func (x *RegisterRequesut) String() string {
+func (x *UserRegisterRequesut) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterRequesut) ProtoMessage() {}
+func (*UserRegisterRequesut) ProtoMessage() {}
 
-func (x *RegisterRequesut) ProtoReflect() protoreflect.Message {
+func (x *UserRegisterRequesut) ProtoReflect() protoreflect.Message {
 	mi := &file_grpc_proto_user_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -114,36 +116,50 @@ func (x *RegisterRequesut) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterRequesut.ProtoReflect.Descriptor instead.
-func (*RegisterRequesut) Descriptor() ([]byte, []int) {
+// Deprecated: Use UserRegisterRequesut.ProtoReflect.Descriptor instead.
+func (*UserRegisterRequesut) Descriptor() ([]byte, []int) {
 	return file_grpc_proto_user_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *RegisterRequesut) GetUserId() string {
+func (x *UserRegisterRequesut) GetAttendanceGroupId() string {
 	if x != nil {
-		return x.UserId
+		return x.AttendanceGroupId
 	}
 	return ""
 }
 
-func (x *RegisterRequesut) GetPassword() string {
+func (x *UserRegisterRequesut) GetLoginId() string {
+	if x != nil {
+		return x.LoginId
+	}
+	return ""
+}
+
+func (x *UserRegisterRequesut) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-type RegisterResponse struct {
+func (x *UserRegisterRequesut) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type UserRegisterResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Status  RegisterStatus `protobuf:"varint,1,opt,name=status,proto3,enum=proto.RegisterStatus" json:"status,omitempty"`
-	Message string         `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Status  UserRegisterStatus `protobuf:"varint,1,opt,name=status,proto3,enum=proto.UserRegisterStatus" json:"status,omitempty"`
+	Message string             `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-func (x *RegisterResponse) Reset() {
-	*x = RegisterResponse{}
+func (x *UserRegisterResponse) Reset() {
+	*x = UserRegisterResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_grpc_proto_user_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -151,13 +167,13 @@ func (x *RegisterResponse) Reset() {
 	}
 }
 
-func (x *RegisterResponse) String() string {
+func (x *UserRegisterResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*RegisterResponse) ProtoMessage() {}
+func (*UserRegisterResponse) ProtoMessage() {}
 
-func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
+func (x *UserRegisterResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_grpc_proto_user_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -169,19 +185,19 @@ func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
-func (*RegisterResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UserRegisterResponse.ProtoReflect.Descriptor instead.
+func (*UserRegisterResponse) Descriptor() ([]byte, []int) {
 	return file_grpc_proto_user_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *RegisterResponse) GetStatus() RegisterStatus {
+func (x *UserRegisterResponse) GetStatus() UserRegisterStatus {
 	if x != nil {
 		return x.Status
 	}
-	return RegisterStatus_UNKNOWN
+	return UserRegisterStatus_UNKNOWN
 }
 
-func (x *RegisterResponse) GetMessage() string {
+func (x *UserRegisterResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
@@ -192,26 +208,32 @@ var File_grpc_proto_user_proto protoreflect.FileDescriptor
 
 var file_grpc_proto_user_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73, 0x65,
-	0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x47,
-	0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x75, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70,
-	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70,
-	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x5b, 0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73,
-	0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x06, 0x73,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x15, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x2a, 0x35, 0x0a, 0x0e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
-	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57,
-	0x4e, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x55, 0x43, 0x43, 0x45, 0x53, 0x53, 0x10, 0x01,
-	0x12, 0x09, 0x0a, 0x05, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x02, 0x32, 0x46, 0x0a, 0x04, 0x55,
-	0x73, 0x65, 0x72, 0x12, 0x3e, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12,
-	0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x75, 0x74, 0x1a, 0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x91,
+	0x01, 0x0a, 0x14, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x75, 0x74, 0x12, 0x2e, 0x0a, 0x13, 0x61, 0x74, 0x74, 0x65, 0x6e,
+	0x64, 0x61, 0x6e, 0x63, 0x65, 0x5f, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x61, 0x74, 0x74, 0x65, 0x6e, 0x64, 0x61, 0x6e, 0x63, 0x65,
+	0x47, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6c, 0x6f, 0x67, 0x69, 0x6e,
+	0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6c, 0x6f, 0x67, 0x69, 0x6e,
+	0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x22, 0x63, 0x0a, 0x14, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x31, 0x0a, 0x06, 0x73, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x19, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x53,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x18, 0x0a,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2a, 0x39, 0x0a, 0x12, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0b, 0x0a,
+	0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x55,
+	0x43, 0x43, 0x45, 0x53, 0x53, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x45, 0x52, 0x52, 0x4f, 0x52,
+	0x10, 0x02, 0x32, 0x4e, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x46, 0x0a, 0x08, 0x52, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x55,
+	0x73, 0x65, 0x72, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x75, 0x74, 0x1a, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x55, 0x73, 0x65, 0x72,
+	0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -229,14 +251,14 @@ func file_grpc_proto_user_proto_rawDescGZIP() []byte {
 var file_grpc_proto_user_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_grpc_proto_user_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_grpc_proto_user_proto_goTypes = []interface{}{
-	(RegisterStatus)(0),      // 0: proto.RegisterStatus
-	(*RegisterRequesut)(nil), // 1: proto.RegisterRequesut
-	(*RegisterResponse)(nil), // 2: proto.RegisterResponse
+	(UserRegisterStatus)(0),      // 0: proto.UserRegisterStatus
+	(*UserRegisterRequesut)(nil), // 1: proto.UserRegisterRequesut
+	(*UserRegisterResponse)(nil), // 2: proto.UserRegisterResponse
 }
 var file_grpc_proto_user_proto_depIdxs = []int32{
-	0, // 0: proto.RegisterResponse.status:type_name -> proto.RegisterStatus
-	1, // 1: proto.User.Register:input_type -> proto.RegisterRequesut
-	2, // 2: proto.User.Register:output_type -> proto.RegisterResponse
+	0, // 0: proto.UserRegisterResponse.status:type_name -> proto.UserRegisterStatus
+	1, // 1: proto.User.Register:input_type -> proto.UserRegisterRequesut
+	2, // 2: proto.User.Register:output_type -> proto.UserRegisterResponse
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -251,7 +273,7 @@ func file_grpc_proto_user_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_grpc_proto_user_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterRequesut); i {
+			switch v := v.(*UserRegisterRequesut); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -263,7 +285,7 @@ func file_grpc_proto_user_proto_init() {
 			}
 		}
 		file_grpc_proto_user_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterResponse); i {
+			switch v := v.(*UserRegisterResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -308,7 +330,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type UserClient interface {
-	Register(ctx context.Context, in *RegisterRequesut, opts ...grpc.CallOption) (*RegisterResponse, error)
+	Register(ctx context.Context, in *UserRegisterRequesut, opts ...grpc.CallOption) (*UserRegisterResponse, error)
 }
 
 type userClient struct {
@@ -319,8 +341,8 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
 }
 
-func (c *userClient) Register(ctx context.Context, in *RegisterRequesut, opts ...grpc.CallOption) (*RegisterResponse, error) {
-	out := new(RegisterResponse)
+func (c *userClient) Register(ctx context.Context, in *UserRegisterRequesut, opts ...grpc.CallOption) (*UserRegisterResponse, error) {
+	out := new(UserRegisterResponse)
 	err := c.cc.Invoke(ctx, "/proto.User/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -330,14 +352,14 @@ func (c *userClient) Register(ctx context.Context, in *RegisterRequesut, opts ..
 
 // UserServer is the server API for User service.
 type UserServer interface {
-	Register(context.Context, *RegisterRequesut) (*RegisterResponse, error)
+	Register(context.Context, *UserRegisterRequesut) (*UserRegisterResponse, error)
 }
 
 // UnimplementedUserServer can be embedded to have forward compatible implementations.
 type UnimplementedUserServer struct {
 }
 
-func (*UnimplementedUserServer) Register(context.Context, *RegisterRequesut) (*RegisterResponse, error) {
+func (*UnimplementedUserServer) Register(context.Context, *UserRegisterRequesut) (*UserRegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 
@@ -346,7 +368,7 @@ func RegisterUserServer(s *grpc.Server, srv UserServer) {
 }
 
 func _User_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequesut)
+	in := new(UserRegisterRequesut)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -358,7 +380,7 @@ func _User_Register_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: "/proto.User/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).Register(ctx, req.(*RegisterRequesut))
+		return srv.(UserServer).Register(ctx, req.(*UserRegisterRequesut))
 	}
 	return interceptor(ctx, in, info, handler)
 }
