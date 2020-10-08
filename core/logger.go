@@ -56,17 +56,34 @@ func ConvertLogLevelToMessage(level LogLevel) string {
 type ContextKey string
 
 // UUIDContextKey UUIDのキー
-const UUIDContextKey ContextKey = "uuid"
+const (
+	UUIDContextKey   ContextKey = "uuid"
+	LoggerContextKey ContextKey = "logger"
+)
 
 // Logger LoggerInterface
 type Logger interface {
 	SetOutput(w io.Writer)
 	SetLogger(logger *log.Logger)
+	SetUUID(uuid string) Logger
 	WithUUID(ctx context.Context) Logger
 	Debug(format string, v ...interface{})
 	Info(format string, v ...interface{})
 	Warn(format string, v ...interface{})
 	Error(format string, v ...interface{})
+}
+
+// SetLogger from context.Context
+func SetLogger(ctx context.Context, l Logger) context.Context {
+	return context.WithValue(ctx, LoggerContextKey, l)
+}
+
+// GetLogger from context.Context
+func GetLogger(ctx context.Context) Logger {
+	if l, ok := ctx.Value(LoggerContextKey).(Logger); ok {
+		return l
+	}
+	return NewLogger(Info)
 }
 
 // logger ログレベルによって出力を変更するロガー
@@ -100,6 +117,13 @@ func (l *logger) WithUUID(ctx context.Context) Logger {
 	if cl.uuid, ok = ctx.Value(UUIDContextKey).(string); !ok {
 		cl.uuid = ""
 	}
+	return cl
+}
+
+// WithUUID UUIDをセットする
+func (l *logger) SetUUID(uuid string) Logger {
+	cl := l.clone()
+	cl.uuid = uuid
 	return cl
 }
 

@@ -12,11 +12,12 @@ import (
 func LoggingInterceptor(logger core.Logger) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		uuid := xid.New().String()
-		ctx = context.WithValue(ctx, core.UUIDContextKey, uuid)
+		newLogger := logger.SetUUID(uuid)
+		ctx = core.SetLogger(ctx, newLogger)
 
-		logger.WithUUID(ctx).Info("method: %s, request: %s", info.FullMethod, req)
+		newLogger.Info("method: %s, request: %s", info.FullMethod, req)
 		resp, err := handler(ctx, req)
-		logger.WithUUID(ctx).Info("method: %s, response: %s", info.FullMethod, resp)
+		newLogger.Info("method: %s, response: %s", info.FullMethod, resp)
 		return resp, err
 	}
 }
