@@ -1,13 +1,21 @@
 <template>
-  <card title="登録フォーム">
+  <card title="あなたの勤怠グループを作成しましょう">
     <form @submit.prevent="submit">
       <div class="mb3">
-        <form-label id="user_id" label="User ID" />
-        <input-field id="user_id" v-model="userId" type="text" />
+        <form-label id="group_name" label="Group Name" />
+        <input-field id="group_name" v-model="groupName" type="text" />
       </div>
       <div class="mb3">
-        <form-label id="password" label="Password" />
+        <form-label id="login_id" label="Administrator ID" />
+        <input-field id="login_id" v-model="loginId" type="text" />
+      </div>
+      <div class="mb3">
+        <form-label id="password" label="Administrator Password" />
         <input-field id="password" v-model="password" type="password" />
+      </div>
+      <div class="mb3">
+        <form-label id="user_name" label="Administrator Name" />
+        <input-field id="user_name" v-model="userName" type="text" />
       </div>
 
       <btn :type="submit">Submit</btn>
@@ -33,13 +41,19 @@ import card from '../../components/presentation/molecules/card.vue'
   },
 })
 export default class extends Vue {
-  private userId = ''
+  private groupName = ''
+  private loginId = ''
   private password = ''
+  private userName = ''
 
   private async submit(): Promise<void> {
-    const res = await this.$axios.post('/user/register', {
-      user_id: this.userId,
+    const res = await this.$axios.post('/group/create', {
+      name: this.groupName,
+      // eslint-disable-next-line camelcase
+      login_id: this.loginId,
       password: this.password,
+      // eslint-disable-next-line camelcase
+      user_name: this.userName,
     })
     if (res.status === StatusCodes.OK) {
       this.$router.replace({ path: '/', append: true })
