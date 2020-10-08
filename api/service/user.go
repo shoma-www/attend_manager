@@ -3,28 +3,28 @@ package service
 import (
 	"context"
 
+	"github.com/shoma-www/attend_manager/api/entity"
 	"github.com/shoma-www/attend_manager/core"
 )
 
 // User operation
 type User struct {
-	logger core.Logger
-	ur     UserRepository
+	ur UserRepository
 }
 
 // NewUser コンストラクタ
-func NewUser(l core.Logger, ur UserRepository) *User {
-	return &User{logger: l, ur: ur}
+func NewUser(ur UserRepository) *User {
+	return &User{ur: ur}
 }
 
 // Register ユーザーの登録
-func (u *User) Register(ctx context.Context, userID string, password string) error {
-	u.logger.WithUUID(ctx).Info("Create User ID: %s", userID)
-	err := u.ur.Resister(ctx, userID, password)
-	if err != nil {
-		u.logger.WithUUID(ctx).Error("Failed Create User")
+func (u *User) Register(ctx context.Context, user entity.User) error {
+	l := core.GetLogger(ctx)
+	l.Info("Create Login ID: %s", user.LoginID)
+	if err := u.ur.Resister(ctx, user); err != nil {
+		l.Error("Failed Create User")
 		return err
 	}
-	u.logger.WithUUID(ctx).Info("Success Create User")
-	return err
+	l.Info("Success Create User")
+	return nil
 }

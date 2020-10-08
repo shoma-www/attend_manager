@@ -38,7 +38,7 @@ func (s *Server) Init() {
 	ch := handler.NewCheckHandler(s.logger, cc)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 
-	cs := service.NewUser(s.logger, s.factory.CreateUser())
+	cs := service.NewUser(s.factory.CreateUser())
 	u := handler.NewUser(s.logger, cs)
 	ru := r.
 		PathPrefix("/user").

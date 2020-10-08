@@ -4,6 +4,8 @@ GET https://api.attend-manager.localhost/healthcheck
 POST https://api.attend-manager.localhost/user/register
 
 {
-    "user_id": "sample",
-    "password": "fugahoge"
+    "group_id": "btvhepsodn8uvn791hrg",
+    "login_id": "sample",
+    "password": "fugahoge",
+    "name": "hoge"
 }

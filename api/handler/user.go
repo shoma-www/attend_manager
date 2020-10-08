@@ -5,15 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/shoma-www/attend_manager/api/entity"
 	"github.com/shoma-www/attend_manager/api/service"
 	"github.com/shoma-www/attend_manager/core"
 )
-
-// UserForm フォーム
-type UserForm struct {
-	UserID   string `json:"user_id"`
-	Password string `json:"password"`
-}
 
 // User is handler
 type User struct {
@@ -45,9 +40,26 @@ func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := u.us.Register(ctx, uf.UserID, uf.Password); err != nil {
+	if err := u.us.Register(ctx, uf.convert()); err != nil {
 		u.logger.WithUUID(ctx).Error(err.Error())
 		w.Write([]byte(err.Error()))
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+// UserForm フォーム
+type UserForm struct {
+	GroupID  string `json:"group_id"`
+	LoginID  string `json:"login_id"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+}
+
+func (u UserForm) convert() entity.User {
+	return entity.User{
+		GroupID:  u.GroupID,
+		LoginID:  u.LoginID,
+		Password: u.Password,
+		Name:     u.Name,
 	}
 }
