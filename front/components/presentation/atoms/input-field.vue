@@ -4,6 +4,7 @@
     :value="value"
     :type="type"
     class="f6 input-reset ba br2 b--black-10 pa2 w5"
+    @input="$emit('input', $event.target.value)"
   />
 </template>
 
