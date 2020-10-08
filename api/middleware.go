@@ -38,9 +38,12 @@ func (m *Middleware) AddUUIDWithContext(next http.Handler) http.Handler {
 // Logger Handlerの前後でログ出力を行う
 func (m *Middleware) Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		l := m.logger.SetUUID(xid.New().String())
+
+		ctx := core.SetLogger(r.Context(), l)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			m.logger.Error("Failed read from r.body. err=%s", err.Error())
+			l.Error("Failed read from r.body. err=%s", err.Error())
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -56,19 +59,19 @@ func (m *Middleware) Logger(next http.Handler) http.Handler {
 		}
 		bs, err = json.Marshal(requestMap)
 		if err != nil {
-			m.logger.WithUUID(r.Context()).Error("Failed read from request. err=%s", err.Error())
+			l.Error("Failed read from request. err=%s", err.Error())
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		m.logger.WithUUID(r.Context()).Info("[Request] %s %s %s, json: %s", r.Method, r.RequestURI, r.Proto, string(bs))
+		l.Info("[Request] %s %s %s, json: %s", r.Method, r.RequestURI, r.Proto, string(bs))
 
 		var sb strings.Builder
 		wres := NewRWWrapper(w, &sb)
 
-		next.ServeHTTP(wres, r)
+		next.ServeHTTP(wres, r.WithContext(ctx))
 
-		m.logger.WithUUID(r.Context()).Info("[Response] %s", sb.String())
+		l.Info("[Response] %s", sb.String())
 	})
 }
 

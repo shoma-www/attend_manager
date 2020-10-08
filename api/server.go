@@ -47,6 +47,13 @@ func (s *Server) Init() {
 		HandleFunc("/register", u.Register).
 		Methods(http.MethodPost, http.MethodOptions)
 
+	gs := service.NewGroup(s.factory.CreateGroup())
+	g := handler.NewGroup(gs)
+	gu := r.PathPrefix("/group").
+		Subrouter()
+	gu.HandleFunc("/create", g.Create).
+		Methods(http.MethodPost, http.MethodOptions)
+
 	m := NewMiddleware(s.logger)
 	r.Use(
 		m.AddUUIDWithContext,

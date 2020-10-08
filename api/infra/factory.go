@@ -40,3 +40,8 @@ func (rf *Factory) CreateCheck() service.CheckRepository {
 func (rf *Factory) CreateUser() service.UserRepository {
 	return &userGrpc{address: rf.address}
 }
+
+// CreateGroup Repositoryつくるで
+func (rf *Factory) CreateGroup() service.GroupRepository {
+	return &groupGrpc{address: rf.address}
+}

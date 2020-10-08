@@ -15,3 +15,8 @@ type CheckRepository interface {
 type UserRepository interface {
 	Resister(ctx context.Context, user entity.User) error
 }
+
+// GroupRepository Repository
+type GroupRepository interface {
+	Create(ctx context.Context, group entity.Group, user entity.User) error
+}
