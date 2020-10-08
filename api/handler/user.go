@@ -26,9 +26,9 @@ func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	req, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		u.logger.WithUUID(ctx).Error(err.Error())
 		w.Write([]byte(err.Error()))
-		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
