@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"cloud.google.com/go/profiler"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/config"
@@ -29,6 +30,19 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 		return
+	}
+
+	{
+		err = profiler.Start(profiler.Config{
+			ProjectID:      "shumai-engineer",
+			Service:        "attend-manager",
+			ServiceVersion: "v1",
+			DebugLogging:   true,
+			MutexProfiling: true,
+		})
+		if err != nil {
+			log.Fatalf("failed to start the profiler: %v", err)
+		}
 	}
 
 	logger := core.NewLogger(core.Debug)

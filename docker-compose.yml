@@ -56,11 +56,14 @@ services:
       dockerfile: ./grpc/Dockerfile
     volumes:
       - ./:/go/app
+      - ${PWD}/resource/gcp/dev/:/gcp/
     networks:
       - api-link
       - db-link
     ports:
       - 50051:50051
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /gcp/attend-dev-key.json
     depends_on:
       - "mysql"
 
