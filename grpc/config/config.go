@@ -16,12 +16,19 @@ var (
 
 // Server サーバー
 type Server struct {
-	Addr string
+	Address string `yaml:"address"`
+}
+
+// Profiler プロファイラ
+type Profiler struct {
+	ProjectID string `yaml:"project_id"`
+	Service   string `yaml:"service"`
 }
 
 // Config コンフィグ
 type Config struct {
 	Server
+	Profiler
 }
 
 // LoadConfig コンフィグをロード

@@ -56,11 +56,13 @@ services:
       dockerfile: ./grpc/Dockerfile
     volumes:
       - ./:/go/app
+      - ${PWD}/resource/gcp/dev/:/gcp/
     networks:
       - api-link
       - db-link
     ports:
       - 50051:50051
+    env_file: ./grpc/.env
     depends_on:
       - "mysql"
 

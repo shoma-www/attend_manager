@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
 
+	"cloud.google.com/go/profiler"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/shoma-www/attend_manager/core"
 	"github.com/shoma-www/attend_manager/grpc/config"
@@ -17,6 +19,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
+
+var revision = "unknown"
 
 func main() {
 	path := "./config/config.yaml"
@@ -31,16 +35,32 @@ func main() {
 		return
 	}
 
+	{
+		err = profiler.Start(profiler.Config{
+			ProjectID:      c.ProjectID,
+			Service:        c.Service,
+			ServiceVersion: revision,
+			DebugLogging:   true,
+			MutexProfiling: true,
+		})
+		if err != nil {
+			log.Fatalf("failed to start the profiler: %v", err)
+		}
+	}
+
 	logger := core.NewLogger(core.Debug)
 	logger.Info("Start gRPC Server")
-	lis, err := net.Listen("tcp", c.Server.Addr)
+	lis, err := net.Listen("tcp", c.Server.Address)
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
 		return
 	}
 
-	cl, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend?parseTime=true")
+	dbName := os.Getenv("ATTEND_DB_NAME")
+	dbUser := os.Getenv("ATTEND_DB_USER")
+	dbPassword := os.Getenv("ATTEND_DB_PASSWARD")
+	cl, err := ent.Open("mysql", fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?parseTime=true", dbName, dbUser, dbPassword))
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
