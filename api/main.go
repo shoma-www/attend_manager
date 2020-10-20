@@ -45,7 +45,9 @@ func main() {
 	go func() {
 		<-sigCh
 		logger.Info("Graceful ShutDown...")
-		s.Shutdown()
+		if err := s.Shutdown(); err != nil {
+			os.Exit(1)
+		}
 		endWaiter.Done()
 	}()
 	endWaiter.Wait()

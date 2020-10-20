@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -76,12 +75,15 @@ func (s *Server) ListenAndServe() {
 	}
 }
 
+const ShutdownTimes = 5
+
 // Shutdown Serverのシャットダウン
-func (s *Server) Shutdown() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+func (s *Server) Shutdown() error {
+	ctx, cancel := context.WithTimeout(context.Background(), ShutdownTimes*time.Second)
 	defer cancel()
 	if err := s.server.Shutdown(ctx); err != nil {
 		s.logger.Error(err.Error())
-		os.Exit(1)
+		return err
 	}
+	return nil
 }
