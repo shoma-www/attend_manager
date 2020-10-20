@@ -26,7 +26,13 @@ func NewAttendanceGroup(l core.Logger, tr Transaction, gr AttendanceGroupReposit
 }
 
 // Create new group
-func (g *AttendanceGroup) Create(ctx context.Context, groupName, loginID, password, userName string) (*entity.AttendanceGroup, *entity.User, error) {
+func (g *AttendanceGroup) Create(
+	ctx context.Context,
+	groupName,
+	loginID,
+	password,
+	userName string,
+) (*entity.AttendanceGroup, *entity.User, error) {
 	type result struct {
 		group *entity.AttendanceGroup
 		user  *entity.User
