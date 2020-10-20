@@ -37,6 +37,7 @@ func ConvertStringToLogLevel(level string) LogLevel {
 }
 
 // ConvertLogLevelToMessage LogLevelをメッセージ用表記に変更
+// nolint
 func ConvertLogLevelToMessage(level LogLevel) string {
 	switch level {
 	case Debug:
@@ -150,21 +151,25 @@ func (l *logger) printf(level LogLevel, format string, v ...interface{}) {
 }
 
 // Debug Debugログ
+// nolint
 func (l *logger) Debug(format string, v ...interface{}) {
 	l.printf(Debug, format, v...)
 }
 
 // Info Infoログ
+// nolint
 func (l *logger) Info(format string, v ...interface{}) {
 	l.printf(Info, format, v...)
 }
 
 // Warn Warnログ
+// nolint
 func (l *logger) Warn(format string, v ...interface{}) {
 	l.printf(Warn, format, v...)
 }
 
 // Error Errorログ
+// nolint
 func (l *logger) Error(format string, v ...interface{}) {
 	l.printf(Error, format, v...)
 }
