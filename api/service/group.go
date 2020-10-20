@@ -19,7 +19,11 @@ func NewGroup(gr GroupRepository) Group {
 }
 
 // Create グループの作成
-func (g *Group) Create(ctx context.Context, group entity.Group, user entity.User) error {
+func (g *Group) Create(
+	ctx context.Context,
+	group entity.Group,
+	user entity.User,
+) error {
 	l := core.GetLogger(ctx)
 	l.Info("Create Group: %s", group.Name)
 	if err := g.gr.Create(ctx, group, user); err != nil {

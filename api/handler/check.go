@@ -10,6 +10,8 @@ import (
 	"github.com/shoma-www/attend_manager/core"
 )
 
+const healthCheckTime = 5
+
 // CheckHandler handler
 type CheckHandler struct {
 	logger core.Logger
@@ -24,7 +26,7 @@ func NewCheckHandler(l core.Logger, cs *service.Check) *CheckHandler {
 // HealthCheck ヘルスチェック用API
 func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), healthCheckTime*time.Second)
 	defer cancel()
 
 	status := http.StatusOK
