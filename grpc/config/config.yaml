@@ -1,2 +1,6 @@
 server:
-  addr: grpc:50051
+  address: grpc:50051
+
+profiler:
+  project_id: "shumai-engineer"
+  service: "attend-manager"
