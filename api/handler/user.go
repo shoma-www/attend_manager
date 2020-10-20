@@ -26,24 +26,21 @@ func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	req, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
 		u.logger.WithUUID(ctx).Error(err.Error())
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var uf UserForm
 	if err := json.Unmarshal(req, &uf); err != nil {
 		u.logger.WithUUID(ctx).Error(err.Error())
-		w.Write([]byte(err.Error()))
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err := u.us.Register(ctx, uf.convert()); err != nil {
 		u.logger.WithUUID(ctx).Error(err.Error())
-		w.Write([]byte(err.Error()))
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 

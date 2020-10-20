@@ -43,7 +43,7 @@ func (ch *CheckHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(body); err != nil {
 		ch.logger.WithUUID(r.Context()).Error(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
