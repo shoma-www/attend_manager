@@ -10,8 +10,8 @@ import (
 
 // Error
 var (
-	ErrorFileLoad = errors.New("Error loading the config file")
-	ErrorYamlLoad = errors.New("Error loading the yaml file")
+	ErrorFileLoad = errors.New("error loading the config file")
+	ErrorYamlLoad = errors.New("error loading the yaml file")
 )
 
 type Server struct {

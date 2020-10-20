@@ -13,6 +13,7 @@ type User struct {
 }
 
 // Fields of the User.
+// nolint
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", xid.ID{}).

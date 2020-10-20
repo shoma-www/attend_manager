@@ -13,6 +13,7 @@ type AttendanceGroup struct {
 }
 
 // Fields of the AttendanceGroup.
+// nolint
 func (AttendanceGroup) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", xid.ID{}).

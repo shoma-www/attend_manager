@@ -34,16 +34,16 @@ func (ud *userDAO) Get(ctx context.Context, groupID xid.ID, loginID string) (*en
 		return nil, errors.Wrap(err, "failed to get users")
 	}
 	ud.logger.Debug("id: %s, group ID:%s, loginID: %s, pass: %s", u.ID, groupID, u.LoginID, u.Password)
-	user := &entity.User{
+	user1 := &entity.User{
 		ID:       u.ID,
 		GroupID:  groupID,
 		LoginID:  u.LoginID,
 		Password: u.Password,
 	}
 	if u.Name != nil {
-		user.Name = *u.Name
+		user1.Name = *u.Name
 	}
-	return user, nil
+	return user1, nil
 }
 
 func (ud *userDAO) Register(ctx context.Context, groupID xid.ID, logiinID, password, name string) (*entity.User, error) {
@@ -63,13 +63,11 @@ func (ud *userDAO) Register(ctx context.Context, groupID xid.ID, logiinID, passw
 		return nil, err
 	}
 
-	user := &entity.User{
+	return &entity.User{
 		ID:       u.ID,
 		GroupID:  groupID,
 		LoginID:  u.LoginID,
 		Name:     name,
 		Password: u.Password,
-	}
-
-	return user, nil
+	}, nil
 }

@@ -35,17 +35,15 @@ func main() {
 		return
 	}
 
-	{
-		err = profiler.Start(profiler.Config{
-			ProjectID:      c.ProjectID,
-			Service:        c.Service,
-			ServiceVersion: revision,
-			DebugLogging:   true,
-			MutexProfiling: true,
-		})
-		if err != nil {
-			log.Fatalf("failed to start the profiler: %v", err)
-		}
+	err = profiler.Start(profiler.Config{
+		ProjectID:      c.ProjectID,
+		Service:        c.Service,
+		ServiceVersion: revision,
+		DebugLogging:   true,
+		MutexProfiling: true,
+	})
+	if err != nil {
+		log.Fatalf("failed to start the profiler: %v", err)
 	}
 
 	logger := core.NewLogger(core.Debug)

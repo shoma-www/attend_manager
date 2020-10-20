@@ -26,19 +26,17 @@ func (g *Group) Create(w http.ResponseWriter, r *http.Request) {
 	l := core.GetLogger(ctx)
 	var gf GroupForm
 	if err := json.NewDecoder(r.Body).Decode(&gf); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		err = errors.Wrap(err, "invalid body paramaters")
+		err = errors.Wrap(err, "invalid body parameters")
 		l.Error(err.Error())
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	group, user := gf.convert()
 	if err := g.gs.Create(ctx, group, user); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
 		err = errors.Wrap(err, "failer create group")
 		l.Error(err.Error())
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
