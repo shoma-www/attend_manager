@@ -1,5 +1,6 @@
 # Binaries for programs and plugins
 *.test
+.env
 
 # Dependency directories (remove the comment below to include it)
 grpc
