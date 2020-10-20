@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -19,6 +20,8 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+var revision = "unknown"
+
 func main() {
 	path := "./config/config.yaml"
 	absPath, err := filepath.Abs(path)
@@ -34,9 +37,9 @@ func main() {
 
 	{
 		err = profiler.Start(profiler.Config{
-			ProjectID:      "shumai-engineer",
-			Service:        "attend-manager",
-			ServiceVersion: "v1",
+			ProjectID:      c.ProjectID,
+			Service:        c.Service,
+			ServiceVersion: revision,
 			DebugLogging:   true,
 			MutexProfiling: true,
 		})
@@ -47,14 +50,17 @@ func main() {
 
 	logger := core.NewLogger(core.Debug)
 	logger.Info("Start gRPC Server")
-	lis, err := net.Listen("tcp", c.Server.Addr)
+	lis, err := net.Listen("tcp", c.Server.Address)
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
 		return
 	}
 
-	cl, err := ent.Open("mysql", "root:root@tcp(mysql:3306)/attend?parseTime=true")
+	dbName := os.Getenv("ATTEND_DB_NAME")
+	dbUser := os.Getenv("ATTEND_DB_USER")
+	dbPassword := os.Getenv("ATTEND_DB_PASSWARD")
+	cl, err := ent.Open("mysql", fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?parseTime=true", dbName, dbUser, dbPassword))
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
