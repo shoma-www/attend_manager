@@ -62,8 +62,7 @@ services:
       - db-link
     ports:
       - 50051:50051
-    environment:
-      GOOGLE_APPLICATION_CREDENTIALS: /gcp/attend-dev-key.json
+    env_file: ./grpc/.env
     depends_on:
       - "mysql"
 
