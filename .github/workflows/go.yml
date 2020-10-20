@@ -30,7 +30,7 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go
-          
+
     - name: Download Modules
       if: steps.cache.outputs.cache-hit != 'true'
       run: go mod download
@@ -42,3 +42,13 @@ jobs:
 
     - name: Test
       run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+
+  lint:
+    name: golint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          varsion: v1.31
