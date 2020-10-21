@@ -47,3 +47,22 @@ func (u *user) Register(ctx context.Context, req *pb.UserRegisterRequesut) (*pb.
 
 	return res, nil
 }
+
+// SignIn サインイン
+func (u *user) SignIn(ctx context.Context, req *pb.UserSignInRequest) (*pb.UserSignInResponse, error) {
+	groupName := req.GetGroupName()
+	loginID, password := req.GetLoginId(), req.GetPassword()
+	userName, err := u.us.SignIn(ctx, groupName, loginID, password)
+	if err != nil {
+		if err == service.ErrUnauthorized {
+			st := status.New(codes.Unauthenticated, err.Error())
+			return nil, st.Err()
+		}
+		st := status.New(codes.Internal, err.Error())
+		return nil, st.Err()
+	}
+	return &pb.UserSignInResponse{
+		GroupName: groupName,
+		UserName:  userName,
+	}, nil
+}
