@@ -13,14 +13,16 @@ type User struct {
 	logger core.Logger
 	tr     Transaction
 	ur     UserRepository
+	ag     AttendanceGroupRepository
 }
 
 // NewUser user service constructor
-func NewUser(l core.Logger, tr Transaction, ur UserRepository) *User {
+func NewUser(l core.Logger, tr Transaction, ur UserRepository, ag AttendanceGroupRepository) *User {
 	return &User{
 		logger: l,
 		tr:     tr,
 		ur:     ur,
+		ag:     ag,
 	}
 }
 

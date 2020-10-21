@@ -84,10 +84,11 @@ func Register(s *grpc.Server, l core.Logger, factory *infra.Factory) {
 	pb.RegisterCheckServer(s, server.NewCheck(l))
 	tr := factory.CreateTransaction()
 	ur := factory.CreateUserRepository()
-	us := service.NewUser(l, tr, ur)
-	pb.RegisterUserServer(s, server.NewUser(l, us))
-
 	gr := factory.CreateAttendanceGroupRepository()
+
+	us := service.NewUser(l, tr, ur, gr)
 	gs := service.NewAttendanceGroup(l, tr, gr, ur)
+
+	pb.RegisterUserServer(s, server.NewUser(l, us))
 	pb.RegisterAttendanceGroupServer(s, server.NewAttendanceGroup(l, gs))
 }
