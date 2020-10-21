@@ -3,6 +3,7 @@ package proto;
 
 service User {
   rpc Register (UserRegisterRequesut) returns (UserRegisterResponse) {}
+  rpc SignIn (UserSignInRequest) returns (UserSignInResponse) {}
 }
 
 message UserRegisterRequesut {
@@ -21,4 +22,15 @@ enum UserRegisterStatus {
   UNKNOWN = 0;
   SUCCESS = 1;
   ERROR = 2;
+}
+
+message UserSignInRequest {
+  string group_name = 1;
+  string login_id = 2;
+  string password = 3;
+}
+
+message UserSignInResponse {
+  string group_name = 1;
+  string user_name = 2;
 }

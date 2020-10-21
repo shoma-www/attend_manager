@@ -26,8 +26,8 @@ func (t *transaction) Transaction(
 	txCtx := context.WithValue(ctx, txKey, tx)
 	v, err := target(txCtx)
 	if err != nil {
-		if err = tx.Rollback(); err != nil {
-			return nil, errors.Wrap(err, "rollback failed")
+		if err2 := tx.Rollback(); err2 != nil {
+			return nil, errors.Wrap(err2, "rollback failed")
 		}
 		t.l.Debug("rollback transaction\n")
 		return nil, errors.Wrap(err, "rollback transaction")

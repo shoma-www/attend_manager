@@ -39,7 +39,7 @@ func main() {
 		ProjectID:      c.ProjectID,
 		Service:        c.Service,
 		ServiceVersion: revision,
-		DebugLogging:   true,
+		DebugLogging:   false,
 		MutexProfiling: true,
 	})
 	if err != nil {
@@ -58,7 +58,7 @@ func main() {
 	dbName := os.Getenv("ATTEND_DB_NAME")
 	dbUser := os.Getenv("ATTEND_DB_USER")
 	dbPassword := os.Getenv("ATTEND_DB_PASSWARD")
-	cl, err := ent.Open("mysql", fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?parseTime=true", dbName, dbUser, dbPassword))
+	cl, err := ent.Open("mysql", fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?parseTime=true", dbUser, dbPassword, dbName))
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
@@ -84,10 +84,11 @@ func Register(s *grpc.Server, l core.Logger, factory *infra.Factory) {
 	pb.RegisterCheckServer(s, server.NewCheck(l))
 	tr := factory.CreateTransaction()
 	ur := factory.CreateUserRepository()
-	us := service.NewUser(l, tr, ur)
-	pb.RegisterUserServer(s, server.NewUser(l, us))
-
 	gr := factory.CreateAttendanceGroupRepository()
+
+	us := service.NewUser(l, tr, ur, gr)
 	gs := service.NewAttendanceGroup(l, tr, gr, ur)
+
+	pb.RegisterUserServer(s, server.NewUser(l, us))
 	pb.RegisterAttendanceGroupServer(s, server.NewAttendanceGroup(l, gs))
 }

@@ -45,8 +45,9 @@ func TestUser_Register(t *testing.T) {
 					Name:     name,
 				}, nil
 			})
+		ag := mock_service.NewMockAttendanceGroupRepository(ctrl)
 
-		us := NewUser(l, mockTransaction{}, mr)
+		us := NewUser(l, mockTransaction{}, mr, ag)
 		user, err := us.Register(ctx, u.GroupID, u.LoginID, u.Password, u.Name)
 		if err != nil {
 			t.Errorf("User.Register() error = %v, wantErr nil", err)
@@ -68,8 +69,9 @@ func TestUser_Register(t *testing.T) {
 		wantErr := entity.ErrDuplicatedUser
 		mr := mock_service.NewMockUserRepository(ctrl)
 		mr.EXPECT().Get(ctx, u.GroupID, u.LoginID).Return(u, nil)
+		ag := mock_service.NewMockAttendanceGroupRepository(ctrl)
 
-		us := NewUser(l, mockTransaction{}, mr)
+		us := NewUser(l, mockTransaction{}, mr, ag)
 		if _, err := us.Register(ctx, u.GroupID, u.LoginID, u.Password, u.Name); err != wantErr {
 			t.Errorf("User.Register() error = %v, wantErr %v", err, wantErr)
 		}
@@ -87,8 +89,9 @@ func TestUser_Register(t *testing.T) {
 		wantErr := errors.New("other error")
 		mr := mock_service.NewMockUserRepository(ctrl)
 		mr.EXPECT().Get(ctx, u.GroupID, u.LoginID).Return(nil, wantErr)
+		ag := mock_service.NewMockAttendanceGroupRepository(ctrl)
 
-		us := NewUser(l, mockTransaction{}, mr)
+		us := NewUser(l, mockTransaction{}, mr, ag)
 		if _, err := us.Register(ctx, u.GroupID, u.LoginID, u.Password, u.Name); err != wantErr {
 			t.Errorf("User.Register() error = %v, wantErr %v", err, wantErr)
 		}
