@@ -39,7 +39,7 @@ func main() {
 		ProjectID:      c.ProjectID,
 		Service:        c.Service,
 		ServiceVersion: revision,
-		DebugLogging:   true,
+		DebugLogging:   false,
 		MutexProfiling: true,
 	})
 	if err != nil {
@@ -58,7 +58,7 @@ func main() {
 	dbName := os.Getenv("ATTEND_DB_NAME")
 	dbUser := os.Getenv("ATTEND_DB_USER")
 	dbPassword := os.Getenv("ATTEND_DB_PASSWARD")
-	cl, err := ent.Open("mysql", fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?parseTime=true", dbName, dbUser, dbPassword))
+	cl, err := ent.Open("mysql", fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?parseTime=true", dbUser, dbPassword, dbName))
 	if err != nil {
 		logger.Error("%s", err.Error())
 		os.Exit(1)
