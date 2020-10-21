@@ -21,3 +21,7 @@ data-dump:
 
 migrate-file:
 	migrate create -ext sql -dir ./resource/mysql/migrations -seq ${file}
+
+proto-%:
+	$(eval NAME := $*)
+	protoc --go_out=plugins=grpc:./ grpc/proto/${NAME}.proto
