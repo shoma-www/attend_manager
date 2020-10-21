@@ -9,7 +9,6 @@ import (
 // AttendanceGroup type
 type AttendanceGroup struct {
 	ID       xid.ID
-	GroupID  xid.ID
 	LoginID  string
 	Password string
 	Name     string
