@@ -73,6 +73,18 @@ func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	ss, err := u.ss.Start(ctx, make(entity.Store))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:     "OmaeHaDareda",
+		Value:    string(ss.ID),
+		Domain:   "*attend-manager.localhost",
+		HttpOnly: true,
+	})
 }
 
 // UserForm フォーム

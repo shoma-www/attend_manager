@@ -46,6 +46,9 @@ func (s *Server) Init() {
 	ru.
 		HandleFunc("/register", u.Register).
 		Methods(http.MethodPost, http.MethodOptions)
+	ru.
+		HandleFunc("/signin", u.SignIn).
+		Methods(http.MethodPost, http.MethodOptions)
 
 	gs := service.NewGroup(s.factory.CreateGroup())
 	g := handler.NewGroup(gs)
