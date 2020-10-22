@@ -32,18 +32,22 @@ func NewServer(c *config.Server, l core.Logger, f *infra.Factory) *Server {
 
 // Init サーバーの初期化。ハンドラーとか設定
 func (s *Server) Init() {
+	ss := s.factory.CreateSession()
 	r := mux.NewRouter()
 	cc := service.NewCheck(s.logger, s.factory.CreateCheck())
 	ch := handler.NewCheckHandler(s.logger, cc)
 	r.HandleFunc("/healthcheck", ch.HealthCheck)
 
 	cs := service.NewUser(s.factory.CreateUser())
-	u := handler.NewUser(s.logger, cs)
+	u := handler.NewUser(s.logger, cs, ss)
 	ru := r.
 		PathPrefix("/user").
 		Subrouter()
 	ru.
 		HandleFunc("/register", u.Register).
+		Methods(http.MethodPost, http.MethodOptions)
+	ru.
+		HandleFunc("/signin", u.SignIn).
 		Methods(http.MethodPost, http.MethodOptions)
 
 	gs := service.NewGroup(s.factory.CreateGroup())

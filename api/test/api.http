@@ -19,3 +19,13 @@ POST https://api.attend-manager.localhost/group/create
     "password": "fugahoge",
     "user_name": "btvhepsodn8uvn791hrg"
 }
+
+###
+
+POST https://api.attend-manager.localhost/user/signin
+
+{
+    "group_name": "hoge",
+    "login_id": "sample",
+    "password": "fugahoge"
+}

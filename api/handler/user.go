@@ -14,11 +14,16 @@ import (
 type User struct {
 	logger core.Logger
 	us     *service.User
+	ss     service.Session
 }
 
 // NewUser コンストラクタ
-func NewUser(l core.Logger, user *service.User) *User {
-	return &User{logger: l, us: user}
+func NewUser(l core.Logger, user *service.User, session service.Session) *User {
+	return &User{
+		logger: l,
+		us:     user,
+		ss:     session,
+	}
 }
 
 // Register ユーザ登録
@@ -30,6 +35,7 @@ func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer r.Body.Close()
 
 	var uf UserForm
 	if err := json.Unmarshal(req, &uf); err != nil {
@@ -42,6 +48,43 @@ func (u *User) Register(w http.ResponseWriter, r *http.Request) {
 		u.logger.WithUUID(ctx).Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+// SignIn サインイン
+func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	l := core.GetLogger(ctx)
+	d := json.NewDecoder(r.Body)
+	defer r.Body.Close()
+
+	var form UserSignInForm
+	if err := d.Decode(&form); err != nil {
+		l.Error(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := u.us.SigIn(ctx, form.GroupName, form.LoginID, form.Password); err != nil {
+		l.Error(err.Error())
+		if err == entity.ErrUnauthenticated {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	ss, err := u.ss.Start(ctx, make(entity.Store))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:     "OmaeHaDareda",
+		Value:    string(ss.ID),
+		Domain:   "*attend-manager.localhost",
+		HttpOnly: true,
+	})
 }
 
 // UserForm フォーム
@@ -59,4 +102,11 @@ func (u UserForm) convert() entity.User {
 		Password: u.Password,
 		Name:     u.Name,
 	}
+}
+
+// UserSignInForm SignInフォーム
+type UserSignInForm struct {
+	GroupName string `json:"group_name"`
+	LoginID   string `json:"login_id"`
+	Password  string `json:"password"`
 }

@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go v0.65.0
 	github.com/facebook/ent v0.4.0
 	github.com/fatih/color v1.9.0 // indirect
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.5.1-0.20200311113236-681ffa848bae
 	github.com/goccy/go-yaml v1.8.0
 	github.com/golang/mock v1.4.4
@@ -13,9 +14,12 @@ require (
 	github.com/google/go-cmp v0.5.2
 	github.com/google/pprof v0.0.0-20201009210932-67992a1a5a35 // indirect
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/securecookie v1.1.1
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.7
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/onsi/ginkgo v1.14.2 // indirect
+	github.com/onsi/gomega v1.10.3 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rs/xid v1.2.1
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
