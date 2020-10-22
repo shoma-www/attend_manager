@@ -14,11 +14,16 @@ import (
 type User struct {
 	logger core.Logger
 	us     *service.User
+	ss     service.Session
 }
 
 // NewUser コンストラクタ
-func NewUser(l core.Logger, user *service.User) *User {
-	return &User{logger: l, us: user}
+func NewUser(l core.Logger, user *service.User, session service.Session) *User {
+	return &User{
+		logger: l,
+		us:     user,
+		ss:     session,
+	}
 }
 
 // Register ユーザ登録

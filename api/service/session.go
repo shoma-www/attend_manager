@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/go-redis/redis"
 	"github.com/shoma-www/attend_manager/api/entity"
 )
 
@@ -14,13 +13,19 @@ type Session interface {
 	Destoroy(ctx context.Context, s entity.Session) error
 }
 
+// const lifetime = 60 * time.Hour
+
 type RedisSession struct {
-	cl *redis.Client
+	addr     string
+	password string
+	db       int
 }
 
-func NewRedisSession(cl *redis.Client) Session {
+func NewRedisSession(addr, password string, db int) Session {
 	return &RedisSession{
-		cl: cl,
+		addr:     addr,
+		password: password,
+		db:       db,
 	}
 }
 

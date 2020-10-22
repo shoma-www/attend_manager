@@ -45,3 +45,8 @@ func (rf *Factory) CreateUser() service.UserRepository {
 func (rf *Factory) CreateGroup() service.GroupRepository {
 	return &groupGrpc{address: rf.address}
 }
+
+// CreateSession Sessionつくるで
+func (rf *Factory) CreateSession() service.Session {
+	return service.NewRedisSession("redis:6379", "", 0)
+}
