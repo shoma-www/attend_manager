@@ -6,6 +6,8 @@ require (
 	cloud.google.com/go v0.65.0
 	github.com/facebook/ent v0.4.0
 	github.com/fatih/color v1.9.0 // indirect
+	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/go-redis/redis/v8 v8.3.2
 	github.com/go-sql-driver/mysql v1.5.1-0.20200311113236-681ffa848bae
 	github.com/goccy/go-yaml v1.8.0
 	github.com/golang/mock v1.4.4
