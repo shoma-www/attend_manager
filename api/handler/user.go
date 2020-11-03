@@ -75,13 +75,18 @@ func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ss, err := u.ss.Start(ctx, make(entity.Store))
+	s := make(entity.Store)
+	s[entity.GroupNameKey] = ud.GroupName
+	s[entity.UserIDKey] = ud.UserID
+	s[entity.UserNameKey] = ud.UserName
+
+	ss, err := u.ss.Start(ctx, s)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:     "OmaeHaDareda",
+		Name:     service.SessionDataName,
 		Value:    string(ss.ID),
 		Domain:   "*attend-manager.localhost",
 		HttpOnly: true,
