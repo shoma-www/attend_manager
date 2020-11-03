@@ -30,13 +30,14 @@ func (u *User) Register(ctx context.Context, user entity.User) error {
 }
 
 // SigIn 認証するで
-func (u *User) SigIn(ctx context.Context, groupName, loginID, password string) error {
+func (u *User) SigIn(ctx context.Context, groupName, loginID, password string) (*entity.SigninData, error) {
 	l := core.GetLogger(ctx)
 	l.Info("SignIn Login ID: %s", loginID)
-	if err := u.ur.SigIn(ctx, groupName, loginID, password); err != nil {
+	sd, err := u.ur.SigIn(ctx, groupName, loginID, password)
+	if err != nil {
 		l.Error("Failed SinIn User")
-		return err
+		return nil, err
 	}
 	l.Info("Success SinIn")
-	return nil
+	return sd, nil
 }

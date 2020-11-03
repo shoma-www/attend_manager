@@ -34,10 +34,10 @@ func (ug *userGrpc) Resister(ctx context.Context, user entity.User) error {
 	return nil
 }
 
-func (ug *userGrpc) SigIn(ctx context.Context, groupName, loginID, password string) error {
+func (ug *userGrpc) SigIn(ctx context.Context, groupName, loginID, password string) (*entity.SigninData, error) {
 	con, err := createGrpcConn(ug.address)
 	if err != nil {
-		return errors.Wrap(err, "create grpc connection error")
+		return nil, errors.Wrap(err, "create grpc connection error")
 	}
 	defer con.Close()
 
@@ -47,14 +47,18 @@ func (ug *userGrpc) SigIn(ctx context.Context, groupName, loginID, password stri
 		LoginId:   loginID,
 		Password:  password,
 	}
-	_, err = client.SignIn(ctx, req)
+	res, err := client.SignIn(ctx, req)
 	if err != nil {
 		st := status.Convert(err)
 		if st.Code() == codes.Unauthenticated {
-			return entity.ErrUnauthenticated
+			return nil, entity.ErrUnauthenticated
 		}
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &entity.SigninData{
+		GroupName: groupName,
+		UserID:    loginID,
+		UserName:  res.GetUserName(),
+	}, nil
 }

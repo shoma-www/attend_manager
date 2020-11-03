@@ -64,7 +64,8 @@ func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := u.us.SigIn(ctx, form.GroupName, form.LoginID, form.Password); err != nil {
+	ud, err := u.us.SigIn(ctx, form.GroupName, form.LoginID, form.Password)
+	if err != nil {
 		l.Error(err.Error())
 		if err == entity.ErrUnauthenticated {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
