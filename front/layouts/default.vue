@@ -4,7 +4,11 @@
       <div class="bg-black-80">
         <nav class="dt w-100 pa3 center">
           <div class="dtc v-mid">
-            <div class="f8 white-90">勤怠管理野郎</div>
+            <div class="f8">
+              <a class="hover-white no-underline white-90" href="/">
+                勤怠管理野郎
+              </a>
+            </div>
           </div>
           <div class="dtc v-mid tr">
             <a
