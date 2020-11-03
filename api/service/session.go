@@ -19,7 +19,10 @@ type Session interface {
 	Destoroy(ctx context.Context, s entity.Session) error
 }
 
-const lifetime = 60 * time.Hour
+const (
+	lifetime        = 60 * time.Hour
+	SessionDataName = "AttendSession"
+)
 
 type RedisSession struct {
 	addr     string

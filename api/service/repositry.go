@@ -14,7 +14,7 @@ type CheckRepository interface {
 // UserRepository Repository
 type UserRepository interface {
 	Resister(ctx context.Context, user entity.User) error
-	SigIn(ctx context.Context, groupName, loginID, password string) error
+	SigIn(ctx context.Context, groupName, loginID, password string) (*entity.SigninData, error)
 }
 
 // GroupRepository Repository

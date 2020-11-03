@@ -64,7 +64,8 @@ func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := u.us.SigIn(ctx, form.GroupName, form.LoginID, form.Password); err != nil {
+	ud, err := u.us.SigIn(ctx, form.GroupName, form.LoginID, form.Password)
+	if err != nil {
 		l.Error(err.Error())
 		if err == entity.ErrUnauthenticated {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -74,15 +75,21 @@ func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ss, err := u.ss.Start(ctx, make(entity.Store))
+	s := make(entity.Store)
+	s[entity.GroupNameKey] = ud.GroupName
+	s[entity.UserIDKey] = ud.UserID
+	s[entity.UserNameKey] = ud.UserName
+
+	ss, err := u.ss.Start(ctx, s)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:     "OmaeHaDareda",
+		Name:     service.SessionDataName,
 		Value:    string(ss.ID),
-		Domain:   "*attend-manager.localhost",
+		Domain:   "attend-manager.localhost",
+		Secure:   true,
 		HttpOnly: true,
 	})
 }
