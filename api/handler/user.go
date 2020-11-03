@@ -88,7 +88,8 @@ func (u *User) SignIn(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     service.SessionDataName,
 		Value:    string(ss.ID),
-		Domain:   "*attend-manager.localhost",
+		Domain:   "attend-manager.localhost",
+		Secure:   true,
 		HttpOnly: true,
 	})
 }
